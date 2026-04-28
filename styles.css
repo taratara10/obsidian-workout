@@ -1,8 +1,330 @@
-/*
+/* ============================================
+   Workout Dashboard — Mobile-friendly styles
+   ============================================ */
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.workout-dashboard {
+	padding: 20px 16px;
+	max-width: 640px;
+	margin: 0 auto;
+	font-family: var(--font-interface);
+}
 
-If your plugin does not need CSS, delete this file.
+.workout-title {
+	font-size: 1.6em;
+	font-weight: 700;
+	margin-bottom: 20px;
+	color: var(--text-normal);
+}
 
-*/
+/* ── Add button ─────────────────────────────── */
+
+.workout-add-btn {
+	display: block;
+	width: 100%;
+	padding: 16px;
+	margin-bottom: 28px;
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border: none;
+	border-radius: 12px;
+	font-size: 1.05em;
+	font-weight: 700;
+	cursor: pointer;
+	letter-spacing: 0.02em;
+	touch-action: manipulation;
+	transition: opacity 0.15s;
+}
+
+.workout-add-btn:active {
+	opacity: 0.8;
+}
+
+/* ── Workout card list ──────────────────────── */
+
+.workout-list {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.workout-empty {
+	color: var(--text-muted);
+	text-align: center;
+	padding: 48px 0;
+	font-size: 0.95em;
+	line-height: 1.6;
+}
+
+.workout-card {
+	background: var(--background-secondary);
+	border-radius: 12px;
+	padding: 16px;
+	border: 1px solid var(--background-modifier-border);
+}
+
+.workout-card-date {
+	font-size: 1em;
+	font-weight: 700;
+	color: var(--text-accent);
+	margin-bottom: 8px;
+}
+
+.workout-card-divider {
+	border: none;
+	border-top: 1px solid var(--background-modifier-border);
+	margin: 0 0 12px 0;
+}
+
+/* ── Exercise rows ──────────────────────────── */
+
+.workout-exercise-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.workout-exercise-row {
+	display: flex;
+	align-items: stretch;
+	gap: 0;
+}
+
+.workout-exercise-bar {
+	width: 3px;
+	border-radius: 2px;
+	margin-right: 10px;
+	flex-shrink: 0;
+	min-height: 20px;
+}
+
+.workout-bar-sets   { background-color: var(--color-green, #4caf50); }
+.workout-bar-emom   { background-color: var(--color-blue, #2196f3); }
+.workout-bar-cardio { background-color: var(--color-orange, #ff9800); }
+
+.workout-exercise-content {
+	flex: 1;
+	min-width: 0;
+}
+
+.workout-name-reps {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.workout-exercise-name {
+	font-weight: 600;
+	font-size: 0.95em;
+	color: var(--text-normal);
+}
+
+.workout-reps {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.workout-rep-badge {
+	background: var(--background-modifier-form-field);
+	border-radius: 6px;
+	padding: 2px 8px;
+	font-size: 0.82em;
+	font-weight: 700;
+	color: var(--text-normal);
+}
+
+.workout-comment {
+	font-size: 0.8em;
+	color: var(--text-muted);
+	margin-top: 4px;
+	padding-left: 2px;
+}
+
+/* ── Exercise select modal ──────────────────── */
+
+.workout-select-modal .modal-content,
+.workout-input-modal .modal-content {
+	padding: 20px;
+}
+
+.workout-select-modal h2,
+.workout-input-modal h2 {
+	margin-bottom: 16px;
+	font-size: 1.2em;
+}
+
+.workout-menu-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.workout-menu-btn {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 14px 16px;
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 10px;
+	font-size: 1em;
+	cursor: pointer;
+	text-align: left;
+	touch-action: manipulation;
+	transition: background 0.1s;
+}
+
+.workout-menu-btn:active {
+	background: var(--background-modifier-hover);
+}
+
+.workout-menu-btn-name {
+	font-weight: 600;
+	color: var(--text-normal);
+}
+
+.workout-menu-type {
+	font-size: 0.72em;
+	font-weight: 600;
+	padding: 3px 8px;
+	border-radius: 4px;
+	background: var(--background-modifier-form-field);
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+}
+
+.workout-type-sets   { color: var(--color-green, #4caf50); }
+.workout-type-emom   { color: var(--color-blue, #2196f3); }
+.workout-type-cardio { color: var(--color-orange, #ff9800); }
+
+/* ── Exercise input modal ───────────────────── */
+
+.workout-field-label {
+	display: block;
+	font-size: 0.85em;
+	font-weight: 600;
+	color: var(--text-muted);
+	margin-bottom: 6px;
+	margin-top: 14px;
+}
+
+.workout-sets-container {
+	margin-bottom: 4px;
+}
+
+.workout-set-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 8px;
+}
+
+.workout-set-label {
+	font-size: 0.85em;
+	color: var(--text-muted);
+	width: 60px;
+	flex-shrink: 0;
+}
+
+.workout-reps-input {
+	width: 80px;
+	padding: 10px 8px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	font-size: 1.15em;
+	font-weight: 700;
+	text-align: center;
+	background: var(--background-modifier-form-field);
+	color: var(--text-normal);
+}
+
+.workout-remove-set-btn {
+	padding: 8px 10px;
+	background: transparent;
+	color: var(--text-muted);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 0.9em;
+	line-height: 1;
+}
+
+.workout-add-set-btn {
+	display: block;
+	width: 100%;
+	padding: 10px;
+	margin-top: 4px;
+	border: 2px dashed var(--background-modifier-border);
+	border-radius: 8px;
+	background: transparent;
+	cursor: pointer;
+	font-size: 0.9em;
+	color: var(--text-muted);
+	touch-action: manipulation;
+}
+
+.workout-input-row {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 4px;
+}
+
+.workout-emom-preview {
+	font-size: 1.1em;
+	font-weight: 700;
+	color: var(--text-accent);
+	text-align: center;
+	padding: 10px;
+	background: var(--background-secondary);
+	border-radius: 8px;
+	margin: 12px 0 4px;
+}
+
+.workout-comment-input {
+	display: block;
+	width: 100%;
+	padding: 10px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 8px;
+	font-size: 0.95em;
+	min-height: 72px;
+	resize: vertical;
+	background: var(--background-modifier-form-field);
+	color: var(--text-normal);
+	font-family: var(--font-interface);
+	margin-top: 6px;
+}
+
+.workout-save-btn {
+	display: block;
+	width: 100%;
+	padding: 14px;
+	margin-top: 16px;
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border: none;
+	border-radius: 10px;
+	font-size: 1em;
+	font-weight: 700;
+	cursor: pointer;
+	touch-action: manipulation;
+	transition: opacity 0.15s;
+}
+
+.workout-save-btn:active {
+	opacity: 0.8;
+}
+
+/* ── Settings tab ───────────────────────────── */
+
+.workout-settings-empty {
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+.workout-settings-menu-list {
+	margin-bottom: 24px;
+}

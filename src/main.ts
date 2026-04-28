@@ -1,99 +1,91 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin} from 'obsidian';
-import {DEFAULT_SETTINGS, MyPluginSettings, SampleSettingTab} from "./settings";
+import { MarkdownView, Plugin, TFile } from 'obsidian';
+import { WorkoutPluginSettings, DEFAULT_SETTINGS, WorkoutSettingTab } from './settings';
+import { FileManager } from './fileManager';
+import { DashboardView, WORKOUT_VIEW_TYPE } from './views/DashboardView';
 
-// Remember to rename these classes and interfaces!
+export default class WorkoutPlugin extends Plugin {
+	settings: WorkoutPluginSettings;
+	fileManager: FileManager;
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+	private isInitializing = true;
 
-	async onload() {
+	async onload(): Promise<void> {
 		await this.loadSettings();
 
-		// This creates an icon in the left ribbon.
-		this.addRibbonIcon('dice', 'Sample', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
+		this.fileManager = new FileManager(this.app, this.settings.workoutFolder);
 
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText('Status bar text');
+		this.registerView(WORKOUT_VIEW_TYPE, leaf => new DashboardView(leaf, this));
 
-		// This adds a simple command that can be triggered anywhere
+		this.addSettingTab(new WorkoutSettingTab(this.app, this));
+
 		this.addCommand({
-			id: 'open-modal-simple',
-			name: 'Open modal (simple)',
-			callback: () => {
-				new SampleModal(this.app).open();
-			}
-		});
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: 'replace-selected',
-			name: 'Replace selected content',
-			editorCallback: (editor: Editor, view: MarkdownView) => {
-				editor.replaceSelection('Sample editor command');
-			}
-		});
-		// This adds a complex command that can check whether the current state of the app allows execution of the command
-		this.addCommand({
-			id: 'open-modal-complex',
-			name: 'Open modal (complex)',
-			checkCallback: (checking: boolean) => {
-				// Conditions to check
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					// If checking is true, we're simply "checking" if the command can be run.
-					// If checking is false, then we want to actually perform the operation.
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-
-					// This command will only show up in Command Palette when the check function returns true
-					return true;
-				}
-				return false;
-			}
+			id: 'open-workout-dashboard',
+			name: 'ダッシュボードを開く',
+			callback: () => this.openDashboard(),
 		});
 
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			new Notice("Click");
+		this.app.workspace.onLayoutReady(async () => {
+			await this.ensureDashboardFile();
+			this.interceptOpenDashboard();
+			this.isInitializing = false;
 		});
 
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-
+		this.registerEvent(
+			this.app.workspace.on('file-open', async (file: TFile | null) => {
+				if (this.isInitializing) return;
+				if (!file || file.path !== this.settings.dashboardPath) return;
+				await this.switchLeafToDashboard(file);
+			})
+		);
 	}
 
-	onunload() {
+	onunload(): void {
+		this.app.workspace.detachLeavesOfType(WORKOUT_VIEW_TYPE);
 	}
 
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<MyPluginSettings>);
+	async loadSettings(): Promise<void> {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData()) as Partial<WorkoutPluginSettings>);
 	}
 
-	async saveSettings() {
+	async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
+		this.fileManager = new FileManager(this.app, this.settings.workoutFolder);
 	}
 
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
+	private async ensureDashboardFile(): Promise<void> {
+		const path = this.settings.dashboardPath;
+		if (this.app.vault.getAbstractFileByPath(path)) return;
+		await this.app.vault.create(path, `# Workout Log\n\nThis file is managed by the Workout Tracker plugin.\n`);
 	}
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
+	private interceptOpenDashboard(): void {
+		const leaves = this.app.workspace.getLeavesOfType('markdown');
+		for (const leaf of leaves) {
+			const view = leaf.view;
+			if (view instanceof MarkdownView && view.file?.path === this.settings.dashboardPath) {
+				leaf.setViewState({ type: WORKOUT_VIEW_TYPE, active: true });
+				break;
+			}
+		}
+	}
+
+	private async switchLeafToDashboard(file: TFile): Promise<void> {
+		const leaves = this.app.workspace.getLeavesOfType('markdown');
+		const target = leaves.find(
+			l => l.view instanceof MarkdownView && (l.view as MarkdownView).file?.path === file.path
+		);
+		if (target) {
+			await target.setViewState({ type: WORKOUT_VIEW_TYPE, active: true });
+		}
+	}
+
+	async openDashboard(): Promise<void> {
+		const existing = this.app.workspace.getLeavesOfType(WORKOUT_VIEW_TYPE)[0];
+		if (existing) {
+			this.app.workspace.revealLeaf(existing);
+			return;
+		}
+		const leaf = this.app.workspace.getLeaf();
+		await leaf.setViewState({ type: WORKOUT_VIEW_TYPE, active: true });
 	}
 }
