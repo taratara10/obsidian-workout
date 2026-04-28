@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "workout-dashboard",
+	"name": "Workout Dashboard",
 	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"minAppVersion": "1.0.0",
+	"description": "Record and track workouts with structured data per exercise type.",
+	"author": "taratara10",
+	"authorUrl": "https://github.com/taratara10",
 	"isDesktopOnly": false
 }
