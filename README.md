@@ -1,90 +1,69 @@
-# Obsidian Sample Plugin
+# Workout Dashboard
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+An Obsidian plugin (personal use) that records workout data as YAML frontmatter in daily `.md` files and renders a custom dashboard UI.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+- Custom dashboard view with exercises grouped by type (Sets / EMOM / Cardio)
+- Tap a chip to log a new entry; tap an existing row to edit or delete it
+- Workout data stored as YAML frontmatter in `workout/YYYY-MM-DD.md`
+- Recent workout history displayed below the chip board
+- Settings tab to manage your exercise menu and folder paths
 
-## First time developing plugins?
+## Exercise types
 
-Quick starting guide for new plugin devs:
+| Type | Input | Storage |
+|------|-------|---------|
+| **Sets** | Numpad → per-set reps via chip list | Array of reps per set |
+| **EMOM** | Reps × Sets fields | `reps` and `sets` integers |
+| **Cardio** | Free-text comment + quick presets | Comment string |
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+## Setup
 
-## Releasing new releases
+1. Clone this repo into your vault's `.obsidian/plugins/workout-dashboard/`
+2. Run `npm i` then `npm run build`
+3. Enable the plugin in Obsidian settings
+4. Open the plugin settings and add at least one exercise (name + type)
+5. Use the command **Open Workout Dashboard** or click the ribbon icon
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Settings
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+| Setting | Default | Description |
+|---------|---------|-------------|
+| Workout folder | `workout` | Folder where daily workout files are saved |
+| Dashboard file | `workout/dashboard.md` | File intercepted and displayed as the custom view |
 
-## Adding your plugin to the community plugin list
+Exercises must be added via settings before they appear on the dashboard. There are no built-in presets.
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+## Development
 
-## How to use
-
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
-
-## Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
+```bash
+npm run dev    # watch mode — bundles src/main.ts → main.js with sourcemaps
+npm run build  # type-check + production bundle
+npm run lint   # ESLint check
 ```
 
-If you have multiple URLs, you can also do:
+To test changes: copy `main.js`, `styles.css`, and `manifest.json` into your vault's `.obsidian/plugins/workout-dashboard/` and reload Obsidian.
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
+## Data format
+
+Each daily file uses YAML frontmatter:
+
+```yaml
+---
+date: 2026-04-30
+exercises:
+  - menu: "Pull-ups"
+    type: sets
+    sets: [10, 8, 6]
+    comment: ""
+  - menu: "Row"
+    type: emom
+    reps: 12
+    sets: 5
+    comment: ""
+  - menu: "Run"
+    type: cardio
+    comment: "5km easy"
+---
 ```
-
-## API Documentation
-
-See https://docs.obsidian.md
