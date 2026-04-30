@@ -11,7 +11,7 @@ export interface WorkoutPluginSettings {
 export const DEFAULT_SETTINGS: WorkoutPluginSettings = {
 	menus: [],
 	workoutFolder: 'workout',
-	dashboardPath: 'dashboard.md',
+	dashboardPath: 'workout/dashboard.md',
 };
 
 export class WorkoutSettingTab extends PluginSettingTab {
@@ -26,7 +26,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		new Setting(containerEl).setName('Workout tracker settings').setHeading();
+		new Setting(containerEl).setName('Workout tracker').setHeading();
 
 		// Exercise menu list
 		new Setting(containerEl).setName('Registered exercises').setHeading();
@@ -43,7 +43,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 			.setName('Exercise name')
 			.addText(text =>
 				text
-					.setPlaceholder('e.g. Pull-ups')
+					.setPlaceholder('Pull-ups')
 					.onChange(value => {
 						newName = value;
 					})
@@ -76,7 +76,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		);
 
 		// Folder settings
-		new Setting(containerEl).setName('Advanced settings').setHeading();
+		new Setting(containerEl).setName('Advanced').setHeading();
 
 		new Setting(containerEl)
 			.setName('Workout folder')
@@ -96,10 +96,10 @@ export class WorkoutSettingTab extends PluginSettingTab {
 			.setDesc('Path to the file displayed in the custom UI')
 			.addText(text =>
 				text
-					.setPlaceholder('Dashboard.md')
+					.setPlaceholder('workout/dashboard.md')
 					.setValue(this.plugin.settings.dashboardPath)
 					.onChange(async value => {
-						this.plugin.settings.dashboardPath = value || 'dashboard.md';
+						this.plugin.settings.dashboardPath = value || 'workout/dashboard.md';
 						await this.plugin.saveSettings();
 					})
 			);
