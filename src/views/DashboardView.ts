@@ -6,6 +6,21 @@ import { ExerciseInputModal } from '../modals/ExerciseInputModal';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
 
+const DAY_LABELS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+const MONTH_LABELS = [
+	'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+	'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+function formatDate(iso: string): { day: string; full: string; iso: string } {
+	const [y, m, d] = iso.split('-').map(Number);
+	if (!y || !m || !d) return { day: '', full: iso, iso };
+	const dt = new Date(y, m - 1, d);
+	const day = DAY_LABELS[dt.getDay()] ?? '';
+	const month = MONTH_LABELS[dt.getMonth()] ?? '';
+	return { day, full: `${month} ${d}`, iso };
+}
+
 export class DashboardView extends ItemView {
 	plugin: WorkoutPlugin;
 
@@ -35,59 +50,93 @@ export class DashboardView extends ItemView {
 		root.empty();
 		root.addClass('workout-dashboard');
 
-		root.createEl('h1', { text: 'Workout Log', cls: 'workout-title' });
+		const canvas = root.createDiv('wt-canvas');
 
-		const addBtn = root.createEl('button', { text: '+ Add Workout', cls: 'workout-add-btn' });
+		// Top bar — file title + dot
+		const topbar = canvas.createDiv('wt-topbar');
+		const title = topbar.createDiv('wt-topbar-title');
+		title.createSpan({ cls: 'wt-dot' });
+		title.createSpan({ text: this.plugin.settings.dashboardPath });
+
+		// Header
+		const header = canvas.createDiv('wt-header');
+		header.createEl('h1', { text: 'Workout Log', cls: 'wt-h1' });
+		header.createEl('p', { text: '直近5件のワークアウト', cls: 'wt-sub' });
+
+		// Add FAB
+		const addBtn = canvas.createEl('button', { cls: 'wt-add-fab' });
+		addBtn.createSpan({ cls: 'wt-plus', text: '+' });
+		addBtn.createSpan({ text: 'Add Workout' });
 		addBtn.addEventListener('click', () => this.openAddFlow());
 
+		// List
 		const workouts = await this.plugin.fileManager.getRecentWorkouts(5);
-
-		const list = root.createDiv('workout-list');
+		const list = canvas.createDiv('wt-list');
 
 		if (workouts.length === 0) {
-			list.createEl('p', {
-				text: 'ワークアウトがまだありません。「+ Add Workout」から記録を始めましょう。',
-				cls: 'workout-empty',
-			});
+			this.renderEmpty(list);
 			return;
 		}
 
 		for (const workout of workouts) {
-			this.renderCard(list, workout);
+			this.renderDateGroup(list, workout);
 		}
 	}
 
-	private renderCard(container: HTMLElement, workout: DayWorkout): void {
-		const card = container.createDiv('workout-card');
+	private renderEmpty(container: HTMLElement): void {
+		const empty = container.createDiv('wt-empty');
+		empty.createDiv({ cls: 'wt-empty-icon', text: '🏋️' });
+		empty.createEl('p', { text: '記録がありません', cls: 'wt-empty-h' });
+		empty.createEl('p', {
+			text: '上のボタンから最初のワークアウトを追加してください',
+			cls: 'wt-empty-p',
+		});
+	}
 
-		card.createEl('div', { text: workout.date, cls: 'workout-card-date' });
-		card.createEl('hr', { cls: 'workout-card-divider' });
+	private renderDateGroup(container: HTMLElement, workout: DayWorkout): void {
+		const group = container.createDiv('wt-date-group');
+		const f = formatDate(workout.date);
 
-		const exerciseList = card.createDiv('workout-exercise-list');
+		const head = group.createDiv('wt-date-group-header');
+		head.createSpan({ cls: 'wt-date-day', text: f.day });
+		head.createSpan({ cls: 'wt-date-full', text: f.iso });
+		head.createSpan({ cls: 'wt-date-rule' });
+
+		const card = group.createDiv('wt-card');
+		const cardList = card.createDiv('wt-card-list');
+
 		for (const ex of workout.exercises) {
-			this.renderExerciseRow(exerciseList, ex);
+			this.renderExerciseRow(cardList, ex);
+			if (ex.comment) {
+				cardList.createDiv({ cls: 'wt-row-comment', text: ex.comment });
+			}
 		}
 	}
 
 	private renderExerciseRow(container: HTMLElement, ex: WorkoutEntry): void {
-		const row = container.createDiv('workout-exercise-row');
-		row.createDiv(`workout-exercise-bar workout-bar-${ex.type}`);
+		const row = container.createDiv('wt-row');
 
-		const content = row.createDiv('workout-exercise-content');
-		const nameRepsLine = content.createDiv('workout-name-reps');
-		nameRepsLine.createEl('span', { text: ex.menu, cls: 'workout-exercise-name' });
+		const name = row.createDiv('wt-row-name');
+		name.createSpan({ cls: 'wt-type-tag', text: ex.type });
+		name.appendText(ex.menu);
 
-		const repsEl = nameRepsLine.createDiv('workout-reps');
+		const values = row.createDiv('wt-row-values');
+
 		if (ex.type === 'sets') {
-			for (const r of ex.sets) {
-				repsEl.createEl('span', { text: `×${r}`, cls: 'workout-rep-badge' });
-			}
+			ex.sets.forEach((reps, i) => {
+				const badge = values.createSpan({
+					cls: 'wt-rep-badge' + (i === 0 ? ' wt-lead' : ''),
+				});
+				badge.createSpan({ cls: 'wt-x', text: '×' });
+				badge.appendText(String(reps));
+			});
 		} else if (ex.type === 'emom') {
-			repsEl.createEl('span', { text: `${ex.reps} × ${ex.sets}`, cls: 'workout-rep-badge' });
-		}
-
-		if (ex.comment) {
-			content.createEl('div', { text: ex.comment, cls: 'workout-comment' });
+			const badge = values.createSpan({ cls: 'wt-emom-badge' });
+			badge.createSpan({ cls: 'wt-reps', text: String(ex.reps) });
+			badge.createSpan({ cls: 'wt-x', text: '×' });
+			badge.createSpan({ text: String(ex.sets) });
+		} else if (ex.type === 'cardio' && !ex.comment) {
+			values.createSpan({ cls: 'wt-cardio-text', text: '—' });
 		}
 	}
 

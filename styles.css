@@ -1,325 +1,812 @@
 /* ============================================
-   Workout Dashboard — Mobile-friendly styles
+   Workout Tracker — Material 3 dark, mobile-first
+   Adapted from design/ for Obsidian plugin use.
    ============================================ */
 
 .workout-dashboard {
-	padding: 20px 16px;
-	max-width: 640px;
-	margin: 0 auto;
+	--wt-bg: #121215;
+	--wt-surface: #1a1a1f;
+	--wt-surface-1: #1f1f25;
+	--wt-surface-2: #26262d;
+	--wt-surface-3: #2d2d35;
+	--wt-outline: #3a3a44;
+	--wt-outline-soft: #2a2a32;
+	--wt-on-surface: #e6e6ea;
+	--wt-on-surface-dim: #b8b8c2;
+	--wt-on-surface-muted: #8a8a96;
+
+	--wt-accent: #b69bff;
+	--wt-accent-container: #3a2f6b;
+	--wt-on-accent: #1c1633;
+	--wt-on-accent-container: #e3d8ff;
+
+	--wt-danger: #ff8a93;
+
+	--wt-r-sm: 8px;
+	--wt-r-md: 12px;
+	--wt-r-lg: 20px;
+	--wt-r-xl: 28px;
+	--wt-r-full: 999px;
+
+	--wt-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+	--wt-shadow-2: 0 2px 6px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+	--wt-shadow-3: 0 4px 12px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+	--wt-font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+
+	background: var(--wt-bg);
+	color: var(--wt-on-surface);
 	font-family: var(--font-interface);
+	min-height: 100%;
+	padding: 0;
 }
 
-.workout-title {
-	font-size: 1.6em;
-	font-weight: 700;
-	margin-bottom: 20px;
-	color: var(--text-normal);
-}
-
-/* ── Add button ─────────────────────────────── */
-
-.workout-add-btn {
-	display: block;
+/* The container view fills its leaf; we constrain content to a mobile canvas. */
+.workout-dashboard .wt-canvas {
 	width: 100%;
-	padding: 16px;
-	margin-bottom: 28px;
-	background-color: var(--interactive-accent);
-	color: var(--text-on-accent);
-	border: none;
-	border-radius: 12px;
-	font-size: 1.05em;
-	font-weight: 700;
-	cursor: pointer;
-	letter-spacing: 0.02em;
-	touch-action: manipulation;
-	transition: opacity 0.15s;
+	max-width: 480px;
+	margin: 0 auto;
+	padding-bottom: 120px;
+	box-sizing: border-box;
 }
 
-.workout-add-btn:active {
-	opacity: 0.8;
-}
-
-/* ── Workout card list ──────────────────────── */
-
-.workout-list {
-	display: flex;
-	flex-direction: column;
-	gap: 16px;
-}
-
-.workout-empty {
-	color: var(--text-muted);
-	text-align: center;
-	padding: 48px 0;
-	font-size: 0.95em;
-	line-height: 1.6;
-}
-
-.workout-card {
-	background: var(--background-secondary);
-	border-radius: 12px;
-	padding: 16px;
-	border: 1px solid var(--background-modifier-border);
-}
-
-.workout-card-date {
-	font-size: 1em;
-	font-weight: 700;
-	color: var(--text-accent);
-	margin-bottom: 8px;
-}
-
-.workout-card-divider {
-	border: none;
-	border-top: 1px solid var(--background-modifier-border);
-	margin: 0 0 12px 0;
-}
-
-/* ── Exercise rows ──────────────────────────── */
-
-.workout-exercise-list {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.workout-exercise-row {
-	display: flex;
-	align-items: stretch;
-	gap: 0;
-}
-
-.workout-exercise-bar {
-	width: 3px;
-	border-radius: 2px;
-	margin-right: 10px;
-	flex-shrink: 0;
-	min-height: 20px;
-}
-
-.workout-bar-sets   { background-color: var(--color-green, #4caf50); }
-.workout-bar-emom   { background-color: var(--color-blue, #2196f3); }
-.workout-bar-cardio { background-color: var(--color-orange, #ff9800); }
-
-.workout-exercise-content {
-	flex: 1;
-	min-width: 0;
-}
-
-.workout-name-reps {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 6px;
-}
-
-.workout-exercise-name {
-	font-weight: 600;
-	font-size: 0.95em;
-	color: var(--text-normal);
-}
-
-.workout-reps {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 4px;
-}
-
-.workout-rep-badge {
-	background: var(--background-modifier-form-field);
-	border-radius: 6px;
-	padding: 2px 8px;
-	font-size: 0.82em;
-	font-weight: 700;
-	color: var(--text-normal);
-}
-
-.workout-comment {
-	font-size: 0.8em;
-	color: var(--text-muted);
-	margin-top: 4px;
-	padding-left: 2px;
-}
-
-/* ── Exercise select modal ──────────────────── */
-
-.workout-select-modal .modal-content,
-.workout-input-modal .modal-content {
-	padding: 20px;
-}
-
-.workout-select-modal h2,
-.workout-input-modal h2 {
-	margin-bottom: 16px;
-	font-size: 1.2em;
-}
-
-.workout-menu-list {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.workout-menu-btn {
+/* ── Top bar ────────────────────────────────── */
+.workout-dashboard .wt-topbar {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
-	padding: 14px 16px;
-	background: var(--background-secondary);
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 10px;
-	font-size: 1em;
-	cursor: pointer;
-	text-align: left;
-	touch-action: manipulation;
-	transition: background 0.1s;
+	padding: 18px 20px 8px;
 }
 
-.workout-menu-btn:active {
-	background: var(--background-modifier-hover);
+.workout-dashboard .wt-topbar-title {
+	font-size: 13px;
+	color: var(--wt-on-surface-muted);
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	display: flex;
+	align-items: center;
+	gap: 8px;
 }
 
-.workout-menu-btn-name {
+.workout-dashboard .wt-topbar-title .wt-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--wt-accent);
+	opacity: 0.7;
+}
+
+/* ── Header ─────────────────────────────────── */
+.workout-dashboard .wt-header {
+	padding: 8px 20px 16px;
+}
+
+.workout-dashboard .wt-h1 {
+	margin: 0;
+	font-size: 30px;
 	font-weight: 600;
-	color: var(--text-normal);
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+	color: var(--wt-on-surface);
 }
 
-.workout-menu-type {
-	font-size: 0.72em;
-	font-weight: 600;
-	padding: 3px 8px;
-	border-radius: 4px;
-	background: var(--background-modifier-form-field);
-	letter-spacing: 0.03em;
-	text-transform: uppercase;
+.workout-dashboard .wt-sub {
+	margin: 6px 0 0;
+	font-size: 13px;
+	color: var(--wt-on-surface-muted);
 }
 
-.workout-type-sets   { color: var(--color-green, #4caf50); }
-.workout-type-emom   { color: var(--color-blue, #2196f3); }
-.workout-type-cardio { color: var(--color-orange, #ff9800); }
-
-/* ── Exercise input modal ───────────────────── */
-
-.workout-field-label {
-	display: block;
-	font-size: 0.85em;
-	font-weight: 600;
-	color: var(--text-muted);
-	margin-bottom: 6px;
-	margin-top: 14px;
-}
-
-.workout-sets-container {
-	margin-bottom: 4px;
-}
-
-.workout-set-row {
+/* ── Add FAB ────────────────────────────────── */
+.workout-dashboard .wt-add-fab {
+	margin: 4px 20px 20px;
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	margin-bottom: 8px;
-}
-
-.workout-set-label {
-	font-size: 0.85em;
-	color: var(--text-muted);
-	width: 60px;
-	flex-shrink: 0;
-}
-
-.workout-reps-input {
-	width: 80px;
-	padding: 10px 8px;
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 8px;
-	font-size: 1.15em;
-	font-weight: 700;
-	text-align: center;
-	background: var(--background-modifier-form-field);
-	color: var(--text-normal);
-}
-
-.workout-remove-set-btn {
-	padding: 8px 10px;
-	background: transparent;
-	color: var(--text-muted);
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 6px;
+	padding: 14px 22px;
+	background: var(--wt-accent-container);
+	color: var(--wt-on-accent-container);
+	border: none;
+	border-radius: var(--wt-r-lg);
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 600;
 	cursor: pointer;
-	font-size: 0.9em;
+	width: calc(100% - 40px);
+	justify-content: center;
+	box-shadow: var(--wt-shadow-2);
+	transition: transform 120ms ease, background 120ms ease;
+}
+
+.workout-dashboard .wt-add-fab:active {
+	transform: scale(0.98);
+}
+
+.workout-dashboard .wt-add-fab .wt-plus {
+	width: 22px;
+	height: 22px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 22px;
+	font-weight: 600;
 	line-height: 1;
 }
 
-.workout-add-set-btn {
-	display: block;
-	width: 100%;
-	padding: 10px;
-	margin-top: 4px;
-	border: 2px dashed var(--background-modifier-border);
-	border-radius: 8px;
-	background: transparent;
-	cursor: pointer;
-	font-size: 0.9em;
-	color: var(--text-muted);
-	touch-action: manipulation;
-}
-
-.workout-input-row {
+/* ── List & date groups ─────────────────────── */
+.workout-dashboard .wt-list {
+	padding: 0 20px;
 	display: flex;
 	flex-direction: column;
+	gap: 22px;
+}
+
+.workout-dashboard .wt-date-group-header {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	padding: 0 4px 8px;
+}
+
+.workout-dashboard .wt-date-day {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--wt-accent);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.workout-dashboard .wt-date-full {
+	font-size: 12px;
+	color: var(--wt-on-surface-muted);
+	font-variant-numeric: tabular-nums;
+	font-family: var(--wt-font-mono);
+}
+
+.workout-dashboard .wt-date-rule {
+	flex: 1;
+	height: 1px;
+	background: var(--wt-outline-soft);
+}
+
+/* ── Workout card (Faithful default) ────────── */
+.workout-dashboard .wt-card {
+	background: var(--wt-surface);
+	border-radius: var(--wt-r-md);
+	border: 1px solid var(--wt-outline-soft);
+	overflow: hidden;
+}
+
+.workout-dashboard .wt-card-list {
+	display: flex;
+	flex-direction: column;
+}
+
+.workout-dashboard .wt-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 12px 14px;
+	position: relative;
+	border-left: 3px solid var(--wt-accent);
+	border-bottom: 1px solid var(--wt-outline-soft);
+}
+
+.workout-dashboard .wt-row:last-child {
+	border-bottom: none;
+}
+
+.workout-dashboard .wt-row-name {
+	flex: 1;
+	font-size: 15px;
+	font-weight: 500;
+	color: var(--wt-on-surface);
+	padding-top: 2px;
+	min-width: 0;
+}
+
+.workout-dashboard .wt-type-tag {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 600;
+	color: var(--wt-on-surface-muted);
+	background: var(--wt-surface-2);
+	padding: 2px 6px;
+	border-radius: var(--wt-r-sm);
+	margin-right: 6px;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	vertical-align: 2px;
+	font-family: var(--wt-font-mono);
+}
+
+.workout-dashboard .wt-row-values {
+	display: flex;
+	flex-wrap: wrap;
 	gap: 6px;
+	align-items: center;
+	padding-top: 1px;
+	justify-content: flex-end;
+}
+
+.workout-dashboard .wt-rep-badge {
+	display: inline-flex;
+	align-items: center;
+	height: 24px;
+	padding: 0 10px;
+	background: var(--wt-surface-2);
+	color: var(--wt-on-surface);
+	border-radius: var(--wt-r-full);
+	font-family: var(--wt-font-mono);
+	font-size: 12px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.01em;
+}
+
+.workout-dashboard .wt-rep-badge .wt-x {
+	color: var(--wt-on-surface-muted);
+	margin-right: 1px;
+	font-weight: 500;
+}
+
+.workout-dashboard .wt-rep-badge.wt-lead {
+	background: var(--wt-accent-container);
+	color: var(--wt-on-accent-container);
+}
+
+.workout-dashboard .wt-emom-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 24px;
+	padding: 0 10px;
+	background: var(--wt-surface-2);
+	color: var(--wt-on-surface);
+	border-radius: var(--wt-r-full);
+	font-family: var(--wt-font-mono);
+	font-size: 12px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.workout-dashboard .wt-emom-badge .wt-reps {
+	color: var(--wt-accent);
+}
+
+.workout-dashboard .wt-emom-badge .wt-x {
+	color: var(--wt-on-surface-muted);
+}
+
+.workout-dashboard .wt-cardio-text {
+	font-size: 13px;
+	color: var(--wt-on-surface-dim);
+	font-style: italic;
+}
+
+.workout-dashboard .wt-row-comment {
+	padding: 0 14px 12px 17px;
+	margin-top: -4px;
+	font-size: 12.5px;
+	color: var(--wt-on-surface-muted);
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	border-left: 3px solid var(--wt-accent);
+	border-bottom: 1px solid var(--wt-outline-soft);
+	background: var(--wt-surface);
+}
+
+.workout-dashboard .wt-card-list > .wt-row-comment:last-child {
+	border-bottom: none;
+}
+
+.workout-dashboard .wt-row-comment::before {
+	content: ">";
+	color: var(--wt-on-surface-muted);
+	font-family: var(--wt-font-mono);
+	font-weight: 600;
+}
+
+/* ── Empty state ────────────────────────────── */
+.workout-dashboard .wt-empty {
+	margin: 24px 20px;
+	padding: 40px 24px;
+	text-align: center;
+	border: 1px dashed var(--wt-outline);
+	border-radius: var(--wt-r-lg);
+	color: var(--wt-on-surface-muted);
+}
+
+.workout-dashboard .wt-empty-icon {
+	font-size: 28px;
+	margin-bottom: 4px;
+	opacity: 0.5;
+}
+
+.workout-dashboard .wt-empty-h {
+	font-size: 15px;
+	font-weight: 500;
+	color: var(--wt-on-surface-dim);
+	margin: 8px 0 4px;
+}
+
+.workout-dashboard .wt-empty-p {
+	font-size: 13px;
+	margin: 0;
+}
+
+/* ============================================
+   Modals — bottom-sheet styling for our modals
+   ============================================ */
+
+.modal.wt-modal {
+	--wt-accent: #b69bff;
+	--wt-accent-container: #3a2f6b;
+	--wt-on-accent: #1c1633;
+	--wt-on-accent-container: #e3d8ff;
+	--wt-surface-1: #1f1f25;
+	--wt-surface-2: #26262d;
+	--wt-surface-3: #2d2d35;
+	--wt-outline: #3a3a44;
+	--wt-outline-soft: #2a2a32;
+	--wt-on-surface: #e6e6ea;
+	--wt-on-surface-dim: #b8b8c2;
+	--wt-on-surface-muted: #8a8a96;
+	--wt-danger: #ff8a93;
+	--wt-r-sm: 8px;
+	--wt-r-md: 12px;
+	--wt-r-lg: 20px;
+	--wt-r-xl: 28px;
+	--wt-r-full: 999px;
+	--wt-font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+
+	width: min(412px, 100vw);
+	max-width: 412px;
+	background: var(--wt-surface-1);
+	border-radius: var(--wt-r-xl) var(--wt-r-xl) 0 0;
+	color: var(--wt-on-surface);
+	padding: 0;
+	box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.modal.wt-modal .modal-content {
+	padding: 0;
+}
+
+.modal.wt-modal .modal-close-button {
+	display: none;
+}
+
+.wt-modal .wt-sheet-handle {
+	width: 32px;
+	height: 4px;
+	background: var(--wt-outline);
+	border-radius: 2px;
+	margin: 12px auto 0;
+}
+
+.wt-modal .wt-sheet-header {
+	padding: 16px 20px 8px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.wt-modal .wt-sheet-title {
+	font-size: 18px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	margin: 0;
+	flex: 1;
+}
+
+.wt-modal .wt-sheet-title.wt-center {
+	text-align: center;
+}
+
+.wt-modal .wt-sheet-body {
+	padding: 4px 12px 16px;
+	max-height: 60vh;
+	overflow-y: auto;
+}
+
+.wt-modal .wt-sheet-footer {
+	padding: 12px 20px 24px;
+	display: flex;
+	gap: 12px;
+	border-top: 1px solid var(--wt-outline-soft);
+}
+
+.wt-modal .wt-icon-btn {
+	width: 36px;
+	height: 36px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	border-radius: var(--wt-r-full);
+	color: var(--wt-on-surface-dim);
+	cursor: pointer;
+	font-size: 20px;
+	line-height: 1;
+}
+
+.wt-modal .wt-icon-btn:hover {
+	background: var(--wt-surface-2);
+	color: var(--wt-on-surface);
+}
+
+/* Section labels & exercise list */
+.wt-modal .wt-section-label {
+	padding: 8px 16px 4px;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--wt-on-surface-muted);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.wt-modal .wt-ex-list {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.wt-modal .wt-ex-item {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 14px 12px;
+	border: none;
+	background: transparent;
+	cursor: pointer;
+	text-align: left;
+	border-radius: var(--wt-r-md);
+	color: var(--wt-on-surface);
+	width: 100%;
+	font: inherit;
+}
+
+.wt-modal .wt-ex-item:hover,
+.wt-modal .wt-ex-item:active {
+	background: var(--wt-surface-2);
+}
+
+.wt-modal .wt-ex-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: var(--wt-r-full);
+	background: var(--wt-surface-2);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--wt-accent);
+	flex-shrink: 0;
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.wt-modal .wt-ex-name {
+	flex: 1;
+	font-size: 15px;
+	font-weight: 500;
+}
+
+.wt-modal .wt-ex-type {
+	font-family: var(--wt-font-mono);
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--wt-on-surface-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	padding: 3px 8px;
+	background: var(--wt-surface-2);
+	border-radius: var(--wt-r-sm);
+}
+
+/* Buttons */
+.wt-modal .wt-btn {
+	flex: 1;
+	height: 48px;
+	border-radius: var(--wt-r-full);
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	border: none;
+	transition: background 120ms;
+}
+
+.wt-modal .wt-btn-primary {
+	background: var(--wt-accent);
+	color: var(--wt-on-accent);
+}
+
+.wt-modal .wt-btn-primary:active {
+	transform: scale(0.98);
+}
+
+.wt-modal .wt-btn-primary:disabled {
+	background: var(--wt-surface-2);
+	color: var(--wt-on-surface-muted);
+	cursor: not-allowed;
+}
+
+.wt-modal .wt-btn-text {
+	background: transparent;
+	color: var(--wt-on-surface-dim);
+	flex: 0 0 auto;
+	padding: 0 18px;
+}
+
+.wt-modal .wt-btn-text:hover {
+	color: var(--wt-on-surface);
+}
+
+/* Number input stage */
+.wt-modal .wt-num-stage {
+	padding: 8px 24px 16px;
+	text-align: center;
+}
+
+.wt-modal .wt-num-label {
+	font-size: 13px;
+	color: var(--wt-on-surface-muted);
+	font-weight: 500;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	font-family: var(--wt-font-mono);
 	margin-bottom: 4px;
 }
 
-.workout-emom-preview {
-	font-size: 1.1em;
-	font-weight: 700;
-	color: var(--text-accent);
-	text-align: center;
-	padding: 10px;
-	background: var(--background-secondary);
-	border-radius: 8px;
-	margin: 12px 0 4px;
+.wt-modal .wt-num-display {
+	font-size: 80px;
+	font-weight: 300;
+	font-family: var(--wt-font-mono);
+	letter-spacing: -0.04em;
+	line-height: 1;
+	color: var(--wt-on-surface);
+	font-variant-numeric: tabular-nums;
+	margin: 12px 0;
+	user-select: none;
 }
 
-.workout-comment-input {
-	display: block;
-	width: 100%;
-	padding: 10px;
-	border: 1px solid var(--background-modifier-border);
-	border-radius: 8px;
-	font-size: 0.95em;
-	min-height: 72px;
-	resize: vertical;
-	background: var(--background-modifier-form-field);
-	color: var(--text-normal);
-	font-family: var(--font-interface);
-	margin-top: 6px;
+.wt-modal .wt-num-display.wt-empty {
+	color: var(--wt-on-surface-muted);
+	opacity: 0.4;
 }
 
-.workout-save-btn {
-	display: block;
-	width: 100%;
-	padding: 14px;
-	margin-top: 16px;
-	background: var(--interactive-accent);
-	color: var(--text-on-accent);
+.wt-modal .wt-num-display .wt-suffix {
+	font-size: 16px;
+	color: var(--wt-on-surface-muted);
+	margin-left: 8px;
+	font-weight: 500;
+	letter-spacing: 0;
+	vertical-align: 22px;
+}
+
+.wt-modal .wt-sets-chips {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	justify-content: center;
+	min-height: 32px;
+	margin-bottom: 4px;
+}
+
+.wt-modal .wt-set-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 12px;
+	background: var(--wt-accent-container);
+	color: var(--wt-on-accent-container);
+	font-family: var(--wt-font-mono);
+	font-size: 13px;
+	font-weight: 600;
+	border-radius: var(--wt-r-full);
+	font-variant-numeric: tabular-nums;
+	animation: wt-pop 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.wt-modal .wt-set-chip .wt-idx {
+	opacity: 0.6;
+	font-weight: 500;
+	font-size: 11px;
+}
+
+@keyframes wt-pop {
+	0% {
+		transform: scale(0.6);
+		opacity: 0;
+	}
+	60% {
+		transform: scale(1.08);
+		opacity: 1;
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+/* Numpad */
+.wt-modal .wt-numpad {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+	padding: 4px 16px 12px;
+}
+
+.wt-modal .wt-numkey {
+	height: 56px;
+	border-radius: var(--wt-r-md);
+	background: var(--wt-surface-2);
+	color: var(--wt-on-surface);
+	font-family: var(--wt-font-mono);
+	font-size: 22px;
+	font-weight: 500;
 	border: none;
-	border-radius: 10px;
-	font-size: 1em;
-	font-weight: 700;
 	cursor: pointer;
-	touch-action: manipulation;
-	transition: opacity 0.15s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 80ms, transform 80ms;
 }
 
-.workout-save-btn:active {
-	opacity: 0.8;
+.wt-modal .wt-numkey:active {
+	background: var(--wt-surface-3);
+	transform: scale(0.97);
 }
 
-/* ── Settings tab ───────────────────────────── */
+.wt-modal .wt-numkey.wt-action {
+	background: var(--wt-accent-container);
+	color: var(--wt-on-accent-container);
+	font-size: 14px;
+	font-weight: 600;
+}
 
+.wt-modal .wt-numkey.wt-danger {
+	color: var(--wt-danger);
+	font-size: 18px;
+}
+
+.wt-modal .wt-numkey:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+/* EMOM dual input */
+.wt-modal .wt-emom-grid {
+	display: grid;
+	grid-template-columns: 1fr 24px 1fr;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 24px 8px;
+}
+
+.wt-modal .wt-emom-field {
+	background: var(--wt-surface-2);
+	border-radius: var(--wt-r-lg);
+	padding: 14px 12px;
+	text-align: center;
+	cursor: pointer;
+	border: 2px solid transparent;
+	transition: border-color 120ms, background 120ms;
+}
+
+.wt-modal .wt-emom-field.wt-active {
+	border-color: var(--wt-accent);
+	background: var(--wt-accent-container);
+}
+
+.wt-modal .wt-emom-field-label {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	font-weight: 600;
+	color: var(--wt-on-surface-muted);
+	font-family: var(--wt-font-mono);
+	margin-bottom: 4px;
+}
+
+.wt-modal .wt-emom-field-value {
+	font-size: 36px;
+	font-weight: 500;
+	font-family: var(--wt-font-mono);
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.03em;
+	color: var(--wt-on-surface);
+}
+
+.wt-modal .wt-emom-times {
+	text-align: center;
+	font-family: var(--wt-font-mono);
+	color: var(--wt-on-surface-muted);
+	font-size: 22px;
+}
+
+/* Comment input + toggle */
+.wt-modal .wt-comment-input {
+	width: calc(100% - 32px);
+	margin: 4px 16px 8px;
+	padding: 12px 14px;
+	background: var(--wt-surface-2);
+	border: 1px solid transparent;
+	border-radius: var(--wt-r-md);
+	color: var(--wt-on-surface);
+	font-family: inherit;
+	font-size: 14px;
+	resize: none;
+	outline: none;
+	transition: border-color 120ms;
+	min-height: 60px;
+	box-sizing: border-box;
+}
+
+.wt-modal .wt-comment-input:focus {
+	border-color: var(--wt-accent);
+}
+
+.wt-modal .wt-comment-toggle {
+	margin: 0 16px 4px;
+	background: transparent;
+	border: none;
+	color: var(--wt-on-surface-muted);
+	font-family: inherit;
+	font-size: 13px;
+	padding: 8px 0;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+}
+
+.wt-modal .wt-comment-toggle:hover {
+	color: var(--wt-on-surface-dim);
+}
+
+.wt-modal .wt-hidden {
+	display: none;
+}
+
+.wt-modal .wt-cardio-comment {
+	min-height: 100px;
+}
+
+/* Quick presets row */
+.wt-modal .wt-quick-presets {
+	display: flex;
+	gap: 8px;
+	padding: 0 16px 12px;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.wt-modal .wt-quick-presets::-webkit-scrollbar {
+	display: none;
+}
+
+.wt-modal .wt-preset-chip {
+	flex-shrink: 0;
+	padding: 6px 12px;
+	background: var(--wt-surface-2);
+	color: var(--wt-on-surface-dim);
+	border-radius: var(--wt-r-full);
+	font-family: var(--wt-font-mono);
+	font-size: 12px;
+	font-weight: 500;
+	border: 1px solid var(--wt-outline-soft);
+	cursor: pointer;
+}
+
+.wt-modal .wt-preset-chip:active {
+	background: var(--wt-accent-container);
+	color: var(--wt-on-accent-container);
+}
+
+/* ── Settings tab (kept lightweight) ────────── */
 .workout-settings-empty {
 	color: var(--text-muted);
 	font-style: italic;
