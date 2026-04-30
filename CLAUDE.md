@@ -17,20 +17,24 @@ There are no automated tests. To verify changes, copy `main.js`, `styles.css`, a
 
 This is an Obsidian plugin (personal use, not for distribution) that records workout data as YAML frontmatter in daily `.md` files and renders a custom dashboard UI.
 
-**Entry point**: `src/main.ts` — `WorkoutPlugin` registers the custom view, intercepts `dashboard.md` opens to swap them to the rich UI, and bootstraps `FileManager`.
+**Entry point** (`src/main.ts`): `WorkoutPlugin` registers the custom view (`workout-dashboard`), the `open-workout-dashboard` command, and the settings tab. On `onLayoutReady` it ensures `dashboardPath` exists, then swaps any already-open Markdown leaf for that file to the custom view. A `file-open` listener performs the same swap for subsequent opens. `FileManager` is rebuilt on every `saveSettings()` so folder-path changes take effect immediately.
 
-**Data layer** (`src/fileManager.ts`): All vault I/O goes through `FileManager`. Workout files live at `workout/YYYY-MM-DD.md` (configurable). The class handles read/write/serialize and returns typed `DayWorkout` objects. YAML is serialized manually (not via a library) to keep the output format consistent.
+**Data layer** (`src/fileManager.ts`): All vault I/O goes through `FileManager`. Workout files live at `workout/YYYY-MM-DD.md` (configurable). The class handles read/write and returns typed `DayWorkout` objects. YAML is parsed via Obsidian's `parseYaml` and serialized manually (not via a library) — `menu` and `comment` are emitted as double-quoted strings with backslash/newline/tab escaped to keep the format predictable.
 
-**View** (`src/views/DashboardView.ts`): `DashboardView` extends `ItemView` and renders the full dashboard DOM using Obsidian's `createEl`/`createDiv` API — no framework. The add flow chains two modals: `ExerciseSelectModal` → `ExerciseInputModal`.
+**View** (`src/views/DashboardView.ts`): `DashboardView` extends `ItemView` and renders the dashboard DOM with Obsidian's `createEl`/`createDiv` API — no framework. Layout: top bar → header → chip board (exercises grouped by `sets` / `emom` / `cardio`) → date-grouped recent-workout list → toast. Tapping a chip opens `ExerciseInputModal` for a new entry; tapping an existing row opens the same modal in edit mode (`initial` set, `onDelete` provided). After save/update/delete the view re-renders and shows a transient toast.
+
+**Modal** (`src/modals/ExerciseInputModal.ts`): One modal serves all three exercise types. Branches into `renderSetsForm` (numpad → chip list of per-set reps), `renderEmomForm` (REPS × SETS fields with focus-swap action), or `renderCardioForm` (textarea + quick-preset chips). The numpad is shared via `renderNumpad`. Footer renders Save/Update + Cancel/Delete depending on `isEditing`.
 
 **Types** (`src/types.ts`): Three exercise types — `sets` (array of per-set reps), `emom` (reps × sets), `cardio` (comment only). `WorkoutEntry` is a discriminated union on `type`.
 
-**Settings** (`src/settings.ts`): Persisted via `plugin.loadData()`/`saveData()` to `data.json`. Stores the user's exercise menu list, workout folder path, and dashboard file path.
+**Settings** (`src/settings.ts`): Persisted via `plugin.loadData()` / `plugin.saveData()` to `data.json`. Stores the user's exercise menu list, workout folder path, and dashboard file path. The settings tab supports adding (name + type) and deleting menu entries — there is no edit/reorder UI.
 
 **Build**: esbuild bundles `src/main.ts` → `main.js` (CJS, ES2018 target). `obsidian` and all CodeMirror/Lezer packages are marked external.
 
 ## Key constraints
 
-- The dashboard file path (`dashboardPath` setting, default `dashboard.md`) is intercepted on `file-open` and its leaf is replaced with the custom view type `workout-dashboard`.
-- `isInitializing` flag prevents the `file-open` handler from firing during `onLayoutReady`.
-- Exercise menus have no presets — the user must add them in settings before recording workouts.
+- The dashboard file path (`dashboardPath` setting, default `dashboard.md`) is intercepted on `file-open` and its leaf is replaced with the custom view type `workout-dashboard`. The file is auto-created with a placeholder body if missing.
+- `isInitializing` flag prevents the `file-open` handler from firing during `onLayoutReady` (the initial swap is done explicitly there instead).
+- Exercise menus have no presets — the user must add them in settings before recording workouts. The chip board shows a guidance message when the menu list is empty.
+- Same-day writes overwrite the existing file: new entries are appended to the `exercises` array, edits replace by index, deletes splice by index.
+- `FileManager` is reconstructed inside `saveSettings()`, so any code holding a long-lived reference to the old instance after a settings change will hit a stale folder path — always read `plugin.fileManager` afresh.
