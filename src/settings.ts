@@ -26,34 +26,34 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		new Setting(containerEl).setName('Workout tracker 設定').setHeading();
+		new Setting(containerEl).setName('Workout tracker settings').setHeading();
 
 		// Exercise menu list
-		new Setting(containerEl).setName('登録済み種目').setHeading();
+		new Setting(containerEl).setName('Registered exercises').setHeading();
 		const menuListEl = containerEl.createDiv('workout-settings-menu-list');
 		this.renderMenuList(menuListEl);
 
 		// Add new menu form
-		new Setting(containerEl).setName('種目を追加').setHeading();
+		new Setting(containerEl).setName('Add exercise').setHeading();
 
 		let newName = '';
 		let newType: ExerciseType = 'sets';
 
 		new Setting(containerEl)
-			.setName('種目名')
+			.setName('Exercise name')
 			.addText(text =>
 				text
-					.setPlaceholder('例: 懸垂')
+					.setPlaceholder('e.g. Pull-ups')
 					.onChange(value => {
 						newName = value;
 					})
 			);
 
-		new Setting(containerEl).setName('タイプ').addDropdown(drop =>
+		new Setting(containerEl).setName('Type').addDropdown(drop =>
 			drop
-				.addOption('sets', 'Sets — セットごとにreps入力')
-				.addOption('emom', 'Emom — reps × sets入力')
-				.addOption('cardio', 'Cardio — コメントのみ')
+				.addOption('sets', 'Sets — reps per set')
+				.addOption('emom', 'Emom — reps × sets')
+				.addOption('cardio', 'Cardio — comment only')
 				.setValue('sets')
 				.onChange(value => {
 					newType = value as ExerciseType;
@@ -62,7 +62,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl).addButton(btn =>
 			btn
-				.setButtonText('追加')
+				.setButtonText('Add')
 				.setCta()
 				.onClick(async () => {
 					const trimmed = newName.trim();
@@ -76,11 +76,11 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		);
 
 		// Folder settings
-		new Setting(containerEl).setName('詳細設定').setHeading();
+		new Setting(containerEl).setName('Advanced settings').setHeading();
 
 		new Setting(containerEl)
-			.setName('ワークアウトフォルダ')
-			.setDesc('ワークアウトファイルの保存先フォルダ')
+			.setName('Workout folder')
+			.setDesc('Folder where workout files are saved')
 			.addText(text =>
 				text
 					.setPlaceholder('Workout')
@@ -92,8 +92,8 @@ export class WorkoutSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('ダッシュボードファイル')
-			.setDesc('カスタムUIで表示するファイルのパス')
+			.setName('Dashboard file')
+			.setDesc('Path to the file displayed in the custom UI')
 			.addText(text =>
 				text
 					.setPlaceholder('Dashboard.md')
@@ -110,7 +110,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 
 		if (this.plugin.settings.menus.length === 0) {
 			container.createEl('p', {
-				text: '種目が登録されていません。下のフォームから追加してください。',
+				text: 'No exercises registered. Add one using the form below.',
 				cls: 'workout-settings-empty',
 			});
 			return;
@@ -122,7 +122,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 				.setDesc(menu.type)
 				.addButton(btn =>
 					btn
-						.setButtonText('削除')
+						.setButtonText('Delete')
 						.setWarning()
 						.onClick(async () => {
 							this.plugin.settings.menus.splice(i, 1);
