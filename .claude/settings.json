@@ -1,5 +1,18 @@
 {
   "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // \"\"' | { read -r f; echo \"$f\" | grep -qE '\\.ts$' && npm run build 2>&1 || true; }",
+            "timeout": 60,
+            "statusMessage": "Building..."
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
