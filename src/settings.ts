@@ -26,15 +26,15 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Workout Tracker 設定' });
+		new Setting(containerEl).setName('Workout tracker 設定').setHeading();
 
 		// Exercise menu list
-		containerEl.createEl('h3', { text: '登録済み種目' });
+		new Setting(containerEl).setName('登録済み種目').setHeading();
 		const menuListEl = containerEl.createDiv('workout-settings-menu-list');
 		this.renderMenuList(menuListEl);
 
 		// Add new menu form
-		containerEl.createEl('h3', { text: '種目を追加' });
+		new Setting(containerEl).setName('種目を追加').setHeading();
 
 		let newName = '';
 		let newType: ExerciseType = 'sets';
@@ -51,9 +51,9 @@ export class WorkoutSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl).setName('タイプ').addDropdown(drop =>
 			drop
-				.addOption('sets', 'sets — セットごとにreps入力')
-				.addOption('emom', 'emom — reps × sets入力')
-				.addOption('cardio', 'cardio — コメントのみ')
+				.addOption('sets', 'Sets — セットごとにreps入力')
+				.addOption('emom', 'Emom — reps × sets入力')
+				.addOption('cardio', 'Cardio — コメントのみ')
 				.setValue('sets')
 				.onChange(value => {
 					newType = value as ExerciseType;
@@ -76,14 +76,14 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		);
 
 		// Folder settings
-		containerEl.createEl('h3', { text: '詳細設定' });
+		new Setting(containerEl).setName('詳細設定').setHeading();
 
 		new Setting(containerEl)
 			.setName('ワークアウトフォルダ')
 			.setDesc('ワークアウトファイルの保存先フォルダ')
 			.addText(text =>
 				text
-					.setPlaceholder('workout')
+					.setPlaceholder('Workout')
 					.setValue(this.plugin.settings.workoutFolder)
 					.onChange(async value => {
 						this.plugin.settings.workoutFolder = value || 'workout';
@@ -96,7 +96,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 			.setDesc('カスタムUIで表示するファイルのパス')
 			.addText(text =>
 				text
-					.setPlaceholder('dashboard.md')
+					.setPlaceholder('Dashboard.md')
 					.setValue(this.plugin.settings.dashboardPath)
 					.onChange(async value => {
 						this.plugin.settings.dashboardPath = value || 'dashboard.md';

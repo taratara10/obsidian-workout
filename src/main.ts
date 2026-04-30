@@ -19,7 +19,7 @@ export default class WorkoutPlugin extends Plugin {
 		this.addSettingTab(new WorkoutSettingTab(this.app, this));
 
 		this.addCommand({
-			id: 'open-workout-dashboard',
+			id: 'open-dashboard',
 			name: 'ダッシュボードを開く',
 			callback: () => this.openDashboard(),
 		});
@@ -40,7 +40,6 @@ export default class WorkoutPlugin extends Plugin {
 	}
 
 	onunload(): void {
-		this.app.workspace.detachLeavesOfType(WORKOUT_VIEW_TYPE);
 	}
 
 	async loadSettings(): Promise<void> {
@@ -63,7 +62,7 @@ export default class WorkoutPlugin extends Plugin {
 		for (const leaf of leaves) {
 			const view = leaf.view;
 			if (view instanceof MarkdownView && view.file?.path === this.settings.dashboardPath) {
-				leaf.setViewState({ type: WORKOUT_VIEW_TYPE, active: true });
+				void leaf.setViewState({ type: WORKOUT_VIEW_TYPE, active: true });
 				break;
 			}
 		}
@@ -72,7 +71,7 @@ export default class WorkoutPlugin extends Plugin {
 	private async switchLeafToDashboard(file: TFile): Promise<void> {
 		const leaves = this.app.workspace.getLeavesOfType('markdown');
 		const target = leaves.find(
-			l => l.view instanceof MarkdownView && (l.view as MarkdownView).file?.path === file.path
+			l => l.view instanceof MarkdownView && l.view.file?.path === file.path
 		);
 		if (target) {
 			await target.setViewState({ type: WORKOUT_VIEW_TYPE, active: true });
@@ -82,7 +81,7 @@ export default class WorkoutPlugin extends Plugin {
 	async openDashboard(): Promise<void> {
 		const existing = this.app.workspace.getLeavesOfType(WORKOUT_VIEW_TYPE)[0];
 		if (existing) {
-			this.app.workspace.revealLeaf(existing);
+			void this.app.workspace.revealLeaf(existing);
 			return;
 		}
 		const leaf = this.app.workspace.getLeaf();

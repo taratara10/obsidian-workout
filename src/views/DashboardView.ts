@@ -41,7 +41,7 @@ export class DashboardView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Workout Log';
+		return 'Workout dashboard';
 	}
 
 	getIcon(): string {
@@ -67,7 +67,7 @@ export class DashboardView extends ItemView {
 
 		// Header
 		const header = canvas.createDiv('wt-header');
-		header.createEl('h1', { text: 'Workout Log', cls: 'wt-h1' });
+		header.createEl('h1', { text: 'Workout log', cls: 'wt-h1' });
 		header.createEl('p', { text: 'Tap to add a record', cls: 'wt-sub' });
 
 		// Quick-add chip board

@@ -131,7 +131,7 @@ export class ExerciseInputModal extends Modal {
 
 		const commentToggle = container.createEl('button', {
 			cls: 'wt-comment-toggle' + (showComment ? ' wt-hidden' : ''),
-			text: '💬 Add note',
+			text: 'Add note',
 		});
 		const commentInput = container.createEl('textarea', {
 			cls: 'wt-comment-input' + (showComment ? '' : ' wt-hidden'),
@@ -272,7 +272,7 @@ export class ExerciseInputModal extends Modal {
 
 		const commentToggle = container.createEl('button', {
 			cls: 'wt-comment-toggle' + (showComment ? ' wt-hidden' : ''),
-			text: '💬 Add note',
+			text: 'Add note',
 		});
 		const commentInput = container.createEl('textarea', {
 			cls: 'wt-comment-input' + (showComment ? '' : ' wt-hidden'),
@@ -337,7 +337,7 @@ export class ExerciseInputModal extends Modal {
 
 		const commentInput = container.createEl('textarea', {
 			cls: 'wt-comment-input wt-cardio-comment',
-			attr: { placeholder: 'e.g. Sprints x8' },
+			attr: { placeholder: 'Sprints x8, 20 min run...' },
 		});
 		commentInput.value = comment;
 		commentInput.addEventListener('input', () => {
