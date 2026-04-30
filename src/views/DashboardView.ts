@@ -170,41 +170,35 @@ export class DashboardView extends ItemView {
 			}
 		});
 
-		// Row 1 — name + total / cardio summary
+		// Single-row layout: [type tag] name → detail chips → total
 		const line = row.createDiv('wt-row-line');
 		const name = line.createDiv('wt-row-name');
 		name.createSpan({ cls: 'wt-type-tag', text: ex.type });
 		name.appendText(ex.menu);
 
 		if (ex.type === 'sets' && ex.sets.length > 0) {
-			const total = ex.sets.reduce((a, b) => a + b, 0);
-			const totalEl = line.createSpan({ cls: 'wt-total-text' });
-			totalEl.appendText(String(total) + ' ');
-			totalEl.createSpan({ cls: 'wt-total-text-unit', text: 'total' });
-		} else if (ex.type === 'emom') {
-			const total = ex.reps * ex.sets;
-			const totalEl = line.createSpan({ cls: 'wt-total-text' });
-			totalEl.appendText(String(total) + ' ');
-			totalEl.createSpan({ cls: 'wt-total-text-unit', text: 'total' });
-		} else if (ex.type === 'cardio' && ex.comment) {
-			const summary = line.createDiv('wt-row-summary');
-			summary.createSpan({ cls: 'wt-cardio-text', text: ex.comment });
-		}
-
-		// Row 2 — detail chips (sets / emom only)
-		if (ex.type === 'sets' && ex.sets.length > 0) {
-			const detail = row.createDiv('wt-row-detail');
+			const detail = line.createDiv('wt-row-detail');
 			ex.sets.forEach(reps => {
 				const badge = detail.createSpan({ cls: 'wt-rep-badge' });
 				badge.createSpan({ cls: 'wt-x', text: '+' });
 				badge.appendText(String(reps));
 			});
+			const total = ex.sets.reduce((a, b) => a + b, 0);
+			const totalEl = line.createSpan({ cls: 'wt-total-text' });
+			totalEl.appendText(String(total) + ' ');
+			totalEl.createSpan({ cls: 'wt-total-text-unit', text: 'total' });
 		} else if (ex.type === 'emom') {
-			const detail = row.createDiv('wt-row-detail');
+			const detail = line.createDiv('wt-row-detail');
 			const badge = detail.createSpan({ cls: 'wt-emom-badge' });
 			badge.createSpan({ cls: 'wt-reps', text: String(ex.reps) });
 			badge.createSpan({ cls: 'wt-x', text: '×' });
 			badge.createSpan({ text: String(ex.sets) });
+			const totalEl = line.createSpan({ cls: 'wt-total-text' });
+			totalEl.appendText(String(ex.reps * ex.sets) + ' ');
+			totalEl.createSpan({ cls: 'wt-total-text-unit', text: 'total' });
+		} else if (ex.type === 'cardio' && ex.comment) {
+			const detail = line.createDiv('wt-row-detail');
+			detail.createSpan({ cls: 'wt-cardio-text', text: ex.comment });
 		}
 	}
 

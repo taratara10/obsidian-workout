@@ -282,14 +282,15 @@
 	display: flex;
 	align-items: center;
 	gap: 12px;
+	min-width: 0;
 }
 
 .workout-dashboard .wt-row-name {
-	flex: 1;
+	flex: 0 0 auto;
 	font-size: 15px;
 	font-weight: 500;
 	color: var(--wt-on-surface);
-	min-width: 0;
+	white-space: nowrap;
 }
 
 .workout-dashboard .wt-type-tag {
@@ -314,8 +315,9 @@
 	color: var(--wt-on-surface-muted);
 	font-variant-numeric: tabular-nums;
 	letter-spacing: -0.01em;
-	flex-shrink: 0;
+	flex: 0 0 auto;
 	white-space: nowrap;
+	margin-left: auto;
 }
 
 .workout-dashboard .wt-total-text-unit {
@@ -329,9 +331,24 @@
 
 .workout-dashboard .wt-row-detail {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	gap: 6px;
 	align-items: center;
+	flex: 1 1 0;
+	min-width: 0;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	mask-image: linear-gradient(to right, black calc(100% - 16px), transparent);
+	-webkit-mask-image: linear-gradient(to right, black calc(100% - 16px), transparent);
+}
+
+.workout-dashboard .wt-row-detail::-webkit-scrollbar {
+	display: none;
+}
+
+.workout-dashboard .wt-row-detail > * {
+	flex: 0 0 auto;
 }
 
 .workout-dashboard .wt-rep-badge {
@@ -382,13 +399,6 @@
 	font-size: 13px;
 	color: var(--wt-on-surface-dim);
 	font-style: italic;
-}
-
-.workout-dashboard .wt-row-summary {
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	flex-shrink: 0;
 }
 
 .workout-dashboard .wt-row-comment {
