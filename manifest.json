@@ -1,7 +1,7 @@
 {
 	"id": "workout-dashboard",
 	"name": "Workout Dashboard",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "1.0.0",
 	"description": "Record and track workouts with structured data per exercise type.",
 	"author": "taratara10",
