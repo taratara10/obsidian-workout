@@ -1,7 +1,6 @@
 import { ItemView, Notice, WorkspaceLeaf } from 'obsidian';
 import WorkoutPlugin from '../main';
-import { DayWorkout, WorkoutEntry } from '../types';
-import { ExerciseSelectModal } from '../modals/ExerciseSelectModal';
+import { DayWorkout, ExerciseMenu, ExerciseType, WorkoutEntry } from '../types';
 import { ExerciseInputModal } from '../modals/ExerciseInputModal';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
@@ -10,6 +9,12 @@ const DAY_LABELS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTH_LABELS = [
 	'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 	'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+const TYPE_GROUPS: { type: ExerciseType; label: string }[] = [
+	{ type: 'sets', label: 'SETS' },
+	{ type: 'emom', label: 'EMOM' },
+	{ type: 'cardio', label: 'CARDIO' },
 ];
 
 function formatDate(iso: string): { day: string; full: string; iso: string } {
@@ -23,6 +28,8 @@ function formatDate(iso: string): { day: string; full: string; iso: string } {
 
 export class DashboardView extends ItemView {
 	plugin: WorkoutPlugin;
+	private toastEl: HTMLElement | null = null;
+	private toastTimer: number | null = null;
 
 	constructor(leaf: WorkspaceLeaf, plugin: WorkoutPlugin) {
 		super(leaf);
@@ -61,13 +68,10 @@ export class DashboardView extends ItemView {
 		// Header
 		const header = canvas.createDiv('wt-header');
 		header.createEl('h1', { text: 'Workout Log', cls: 'wt-h1' });
-		header.createEl('p', { text: '直近5件のワークアウト', cls: 'wt-sub' });
+		header.createEl('p', { text: 'Tap to add a record', cls: 'wt-sub' });
 
-		// Add FAB
-		const addBtn = canvas.createEl('button', { cls: 'wt-add-fab' });
-		addBtn.createSpan({ cls: 'wt-plus', text: '+' });
-		addBtn.createSpan({ text: 'Add Workout' });
-		addBtn.addEventListener('click', () => this.openAddFlow());
+		// Quick-add chip board
+		this.renderChipBoard(canvas);
 
 		// List
 		const workouts = await this.plugin.fileManager.getRecentWorkouts(5);
@@ -75,20 +79,55 @@ export class DashboardView extends ItemView {
 
 		if (workouts.length === 0) {
 			this.renderEmpty(list);
+		} else {
+			for (const workout of workouts) {
+				this.renderDateGroup(list, workout);
+			}
+		}
+
+		// Toast container (hidden by default)
+		this.toastEl = canvas.createDiv('wt-toast');
+	}
+
+	private renderChipBoard(container: HTMLElement): void {
+		const board = container.createDiv('wt-chip-board');
+		const menus = this.plugin.settings.menus;
+
+		if (menus.length === 0) {
+			board.createDiv({
+				cls: 'wt-chip-empty',
+				text: 'No exercises yet. Add some in settings to get started.',
+			});
 			return;
 		}
 
-		for (const workout of workouts) {
-			this.renderDateGroup(list, workout);
+		for (const group of TYPE_GROUPS) {
+			const items = menus.filter(m => m.type === group.type);
+			if (items.length === 0) continue;
+
+			const grp = board.createDiv('wt-chip-group');
+			const label = grp.createDiv('wt-chip-group-label');
+			label.createSpan({ cls: 'wt-chip-group-icon', text: '·' });
+			label.appendText(group.label);
+
+			const row = grp.createDiv('wt-chip-row');
+			for (const menu of items) {
+				const chip = row.createEl('button', {
+					cls: `wt-chip wt-chip-${menu.type}`,
+				});
+				chip.createSpan({ cls: 'wt-chip-plus', text: '+' });
+				chip.createSpan({ cls: 'wt-chip-name', text: menu.name });
+				chip.addEventListener('click', () => this.openInputModal(menu));
+			}
 		}
 	}
 
 	private renderEmpty(container: HTMLElement): void {
 		const empty = container.createDiv('wt-empty');
 		empty.createDiv({ cls: 'wt-empty-icon', text: '🏋️' });
-		empty.createEl('p', { text: '記録がありません', cls: 'wt-empty-h' });
+		empty.createEl('p', { text: 'No workouts yet', cls: 'wt-empty-h' });
 		empty.createEl('p', {
-			text: '上のボタンから最初のワークアウトを追加してください',
+			text: 'Tap a chip above to log your first workout',
 			cls: 'wt-empty-p',
 		});
 	}
@@ -105,63 +144,140 @@ export class DashboardView extends ItemView {
 		const card = group.createDiv('wt-card');
 		const cardList = card.createDiv('wt-card-list');
 
-		for (const ex of workout.exercises) {
-			this.renderExerciseRow(cardList, ex);
-			if (ex.comment) {
+		workout.exercises.forEach((ex, idx) => {
+			this.renderExerciseRow(cardList, workout.date, idx, ex);
+			if (ex.comment && ex.type !== 'cardio') {
 				cardList.createDiv({ cls: 'wt-row-comment', text: ex.comment });
 			}
-		}
+		});
 	}
 
-	private renderExerciseRow(container: HTMLElement, ex: WorkoutEntry): void {
+	private renderExerciseRow(
+		container: HTMLElement,
+		date: string,
+		idx: number,
+		ex: WorkoutEntry
+	): void {
 		const row = container.createDiv('wt-row');
+		row.setAttr('role', 'button');
+		row.setAttr('tabindex', '0');
+		const onClick = () => this.openEditModal(date, idx, ex);
+		row.addEventListener('click', onClick);
+		row.addEventListener('keydown', e => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				e.preventDefault();
+				onClick();
+			}
+		});
 
-		const name = row.createDiv('wt-row-name');
+		// Row 1 — name + total / cardio summary
+		const line = row.createDiv('wt-row-line');
+		const name = line.createDiv('wt-row-name');
 		name.createSpan({ cls: 'wt-type-tag', text: ex.type });
 		name.appendText(ex.menu);
 
-		const values = row.createDiv('wt-row-values');
+		if (ex.type === 'sets' && ex.sets.length > 0) {
+			const total = ex.sets.reduce((a, b) => a + b, 0);
+			const totalEl = line.createSpan({ cls: 'wt-total-text' });
+			totalEl.appendText(String(total) + ' ');
+			totalEl.createSpan({ cls: 'wt-total-text-unit', text: 'total' });
+		} else if (ex.type === 'emom') {
+			const total = ex.reps * ex.sets;
+			const totalEl = line.createSpan({ cls: 'wt-total-text' });
+			totalEl.appendText(String(total) + ' ');
+			totalEl.createSpan({ cls: 'wt-total-text-unit', text: 'total' });
+		} else if (ex.type === 'cardio' && ex.comment) {
+			const summary = line.createDiv('wt-row-summary');
+			summary.createSpan({ cls: 'wt-cardio-text', text: ex.comment });
+		}
 
-		if (ex.type === 'sets') {
-			ex.sets.forEach((reps, i) => {
-				const badge = values.createSpan({
-					cls: 'wt-rep-badge' + (i === 0 ? ' wt-lead' : ''),
-				});
-				badge.createSpan({ cls: 'wt-x', text: '×' });
+		// Row 2 — detail chips (sets / emom only)
+		if (ex.type === 'sets' && ex.sets.length > 0) {
+			const detail = row.createDiv('wt-row-detail');
+			ex.sets.forEach(reps => {
+				const badge = detail.createSpan({ cls: 'wt-rep-badge' });
+				badge.createSpan({ cls: 'wt-x', text: '+' });
 				badge.appendText(String(reps));
 			});
 		} else if (ex.type === 'emom') {
-			const badge = values.createSpan({ cls: 'wt-emom-badge' });
+			const detail = row.createDiv('wt-row-detail');
+			const badge = detail.createSpan({ cls: 'wt-emom-badge' });
 			badge.createSpan({ cls: 'wt-reps', text: String(ex.reps) });
 			badge.createSpan({ cls: 'wt-x', text: '×' });
 			badge.createSpan({ text: String(ex.sets) });
-		} else if (ex.type === 'cardio' && !ex.comment) {
-			values.createSpan({ cls: 'wt-cardio-text', text: '—' });
 		}
 	}
 
-	private openAddFlow(): void {
-		const menus = this.plugin.settings.menus;
-		if (menus.length === 0) {
-			new Notice('種目が未登録です。設定画面から種目を追加してください。');
-			return;
-		}
-
-		new ExerciseSelectModal(this.app, menus, menu => {
-			new ExerciseInputModal(this.app, menu, async entry => {
-				const today = this.plugin.fileManager.getTodayDate();
-				let workout = await this.plugin.fileManager.readWorkout(today);
-				if (!workout) {
-					workout = { date: today, exercises: [] };
-				}
-				workout.exercises.push(entry);
-				try {
-					await this.plugin.fileManager.writeWorkout(workout);
-					await this.render();
-				} catch (e) {
-					new Notice('保存に失敗しました: ' + (e as Error).message);
-				}
-			}).open();
+	private openInputModal(menu: ExerciseMenu): void {
+		new ExerciseInputModal(this.app, menu, {
+			onSave: async entry => {
+				await this.appendEntry(entry);
+			},
 		}).open();
+	}
+
+	private openEditModal(date: string, idx: number, entry: WorkoutEntry): void {
+		const menu: ExerciseMenu = { name: entry.menu, type: entry.type };
+		new ExerciseInputModal(this.app, menu, {
+			initial: entry,
+			onSave: async updated => {
+				await this.replaceEntry(date, idx, updated);
+			},
+			onDelete: async () => {
+				await this.deleteEntry(date, idx);
+			},
+		}).open();
+	}
+
+	private async appendEntry(entry: WorkoutEntry): Promise<void> {
+		const today = this.plugin.fileManager.getTodayDate();
+		let workout = await this.plugin.fileManager.readWorkout(today);
+		if (!workout) workout = { date: today, exercises: [] };
+		workout.exercises.push(entry);
+		try {
+			await this.plugin.fileManager.writeWorkout(workout);
+			await this.render();
+			this.showToast('Saved');
+		} catch (e) {
+			new Notice('Failed to save: ' + (e as Error).message);
+		}
+	}
+
+	private async replaceEntry(date: string, idx: number, entry: WorkoutEntry): Promise<void> {
+		const workout = await this.plugin.fileManager.readWorkout(date);
+		if (!workout) return;
+		workout.exercises[idx] = entry;
+		try {
+			await this.plugin.fileManager.writeWorkout(workout);
+			await this.render();
+			this.showToast('Updated');
+		} catch (e) {
+			new Notice('Failed to update: ' + (e as Error).message);
+		}
+	}
+
+	private async deleteEntry(date: string, idx: number): Promise<void> {
+		const workout = await this.plugin.fileManager.readWorkout(date);
+		if (!workout) return;
+		workout.exercises.splice(idx, 1);
+		try {
+			await this.plugin.fileManager.writeWorkout(workout);
+			await this.render();
+			this.showToast('Deleted');
+		} catch (e) {
+			new Notice('Failed to delete: ' + (e as Error).message);
+		}
+	}
+
+	private showToast(msg: string): void {
+		if (!this.toastEl) return;
+		const el = this.toastEl;
+		el.setText(msg);
+		el.addClass('wt-show');
+		if (this.toastTimer !== null) window.clearTimeout(this.toastTimer);
+		this.toastTimer = window.setTimeout(() => {
+			el.removeClass('wt-show');
+			this.toastTimer = null;
+		}, 1800);
 	}
 }
