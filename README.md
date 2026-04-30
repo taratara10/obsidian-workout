@@ -67,3 +67,9 @@ exercises:
     comment: "5km easy"
 ---
 ```
+
+##	Manually installing the plugin
+Copy over below to your vault `VaultFolder/.obsidian/plugins/obsidian-workout/.`
+- main.js
+- styles.css
+- manifest.json 
