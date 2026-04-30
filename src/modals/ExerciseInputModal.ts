@@ -28,7 +28,6 @@ export class ExerciseInputModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createDiv('wt-sheet-handle');
 		this.renderSheetHeader(contentEl);
 
 		if (this.menu.type === 'sets') {
@@ -46,16 +45,15 @@ export class ExerciseInputModal extends Modal {
 
 	private renderSheetHeader(container: HTMLElement): void {
 		const header = container.createDiv('wt-sheet-header');
-		const back = header.createEl('button', { cls: 'wt-icon-btn', text: '‹' });
-		back.setAttribute('aria-label', 'Back');
-		back.addEventListener('click', () => this.close());
 
 		header.createEl('h3', {
-			cls: 'wt-sheet-title wt-center',
+			cls: 'wt-sheet-title',
 			text: this.menu.name,
 		});
 
-		header.createSpan({ attr: { style: 'width: 36px;' } });
+		const close = header.createEl('button', { cls: 'wt-icon-btn', text: '✕' });
+		close.setAttribute('aria-label', 'Close');
+		close.addEventListener('click', () => this.close());
 	}
 
 	private renderSetsForm(container: HTMLElement): void {

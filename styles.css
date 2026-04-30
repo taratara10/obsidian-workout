@@ -485,7 +485,7 @@
 }
 
 /* ============================================
-   Modals — bottom-sheet styling for our modals
+   Modals — dialog styling
    ============================================ */
 
 .modal.wt-modal {
@@ -505,17 +505,17 @@
 	--wt-r-sm: 8px;
 	--wt-r-md: 12px;
 	--wt-r-lg: 20px;
-	--wt-r-xl: 28px;
+	--wt-r-xl: 20px;
 	--wt-r-full: 999px;
 	--wt-font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
 
-	width: min(412px, 100vw);
-	max-width: 412px;
+	width: min(420px, 90vw);
+	max-width: 420px;
 	background: var(--wt-surface-1);
-	border-radius: var(--wt-r-xl) var(--wt-r-xl) 0 0;
+	border-radius: var(--wt-r-xl);
 	color: var(--wt-on-surface);
 	padding: 0;
-	box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .modal.wt-modal .modal-content {
@@ -527,19 +527,16 @@
 }
 
 .wt-modal .wt-sheet-handle {
-	width: 32px;
-	height: 4px;
-	background: var(--wt-outline);
-	border-radius: 2px;
-	margin: 12px auto 0;
+	display: none;
 }
 
 .wt-modal .wt-sheet-header {
-	padding: 16px 20px 8px;
+	padding: 20px 20px 12px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 12px;
+	border-bottom: 1px solid var(--wt-outline-soft);
 }
 
 .wt-modal .wt-sheet-title {
@@ -550,10 +547,6 @@
 	flex: 1;
 }
 
-.wt-modal .wt-sheet-title.wt-center {
-	text-align: center;
-}
-
 .wt-modal .wt-sheet-body {
 	padding: 4px 12px 16px;
 	max-height: 60vh;
@@ -561,25 +554,26 @@
 }
 
 .wt-modal .wt-sheet-footer {
-	padding: 12px 20px 24px;
+	padding: 16px 20px 20px;
 	display: flex;
 	gap: 12px;
 	border-top: 1px solid var(--wt-outline-soft);
 }
 
 .wt-modal .wt-icon-btn {
-	width: 36px;
-	height: 36px;
+	width: 32px;
+	height: 32px;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	background: transparent;
 	border: none;
 	border-radius: var(--wt-r-full);
-	color: var(--wt-on-surface-dim);
+	color: var(--wt-on-surface-muted);
 	cursor: pointer;
-	font-size: 20px;
+	font-size: 14px;
 	line-height: 1;
+	flex-shrink: 0;
 }
 
 .wt-modal .wt-icon-btn:hover {
