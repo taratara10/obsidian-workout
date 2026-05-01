@@ -23,13 +23,23 @@ This is an Obsidian plugin (personal use, not for distribution) that records wor
 
 **View** (`src/views/DashboardView.ts`): `DashboardView` extends `ItemView` and renders the dashboard DOM with Obsidian's `createEl`/`createDiv` API — no framework. Layout: top bar → header → chip board (exercises grouped by `sets` / `emom` / `cardio`) → date-grouped recent-workout list → toast. Tapping a chip opens `ExerciseInputModal` for a new entry; tapping an existing row opens the same modal in edit mode (`initial` set, `onDelete` provided). After save/update/delete the view re-renders and shows a transient toast.
 
-**Modal** (`src/modals/ExerciseInputModal.ts`): One modal serves all three exercise types. Branches into `renderSetsForm` (numpad → chip list of per-set reps), `renderEmomForm` (REPS × SETS fields with focus-swap action), or `renderCardioForm` (textarea + quick-preset chips). The numpad is shared via `renderNumpad`. Footer renders Save/Update + Cancel/Delete depending on `isEditing`.
+**Modal** (`src/modals/ExerciseInputModal.ts`): One modal serves all exercise types. Branches into `renderSetsForm` (numpad → chip list of per-set reps), `renderEmomForm` (REPS × SETS fields with focus-swap action), `renderCardioForm` (textarea + quick-preset chips), or `renderRoutineForm` (textarea only). The numpad is shared via `renderNumpad`. Footer renders Save/Update + Cancel/Delete depending on `isEditing`.
 
-**Types** (`src/types.ts`): Three exercise types — `sets` (array of per-set reps), `emom` (reps × sets), `cardio` (comment only). `WorkoutEntry` is a discriminated union on `type`.
+**Types** (`src/types.ts`): Four exercise types — `sets` (array of per-set reps), `emom` (reps × sets), `cardio` (comment only), `routine` (comment only). `WorkoutEntry` is a discriminated union on `type`.
 
 **Settings** (`src/settings.ts`): Persisted via `plugin.loadData()` / `plugin.saveData()` to `data.json`. Stores the user's exercise menu list, workout folder path, and dashboard file path. The settings tab supports adding (name + type) and deleting menu entries — there is no edit/reorder UI.
 
 **Build**: esbuild bundles `src/main.ts` → `main.js` (CJS, ES2018 target). `obsidian` and all CodeMirror/Lezer packages are marked external.
+
+## Adding a new exercise type
+
+Edit these files in order:
+
+1. **`src/types.ts`** — add the type literal to `ExerciseType`, define a new `XxxWorkoutEntry` interface (at minimum `menu`, `type`, `comment`), and add it to the `WorkoutEntry` union.
+2. **`src/views/DashboardView.ts`** — add `{ type: 'xxx', label: 'XXX' }` to `TYPE_GROUPS`. If the type stores data in `comment`, also add it to the two exclusion checks (`ex.type !== 'xxx'` in `renderDateGroup`, and the `cardio || routine` condition in `renderExerciseRow`).
+3. **`src/modals/ExerciseInputModal.ts`** — add an `else if` branch in `onOpen`, then implement `renderXxxForm`. Types that only need a text comment can copy `renderRoutineForm` verbatim and adjust the label and save payload.
+4. **`src/settings.ts`** — add `.addOption('xxx', 'Xxx — description')` to the type dropdown.
+5. **`src/fileManager.ts`** — update `serialize()` only if the new type stores fields beyond `comment`. The existing `else` branch already handles comment-only types.
 
 ## Key constraints
 
