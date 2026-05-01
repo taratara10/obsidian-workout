@@ -57,17 +57,53 @@ export class FileManager {
 		if (!folder || !(folder instanceof TFolder)) return [];
 
 		const files = folder.children
-			.filter((f): f is TFile => f instanceof TFile && f.extension === 'md')
+			.filter((f): f is TFile => f instanceof TFile && /^\d{4}-\d{2}-\d{2}\.md$/.test(f.name))
 			.sort((a, b) => (a.name < b.name ? 1 : a.name > b.name ? -1 : 0))
 			.slice(0, count);
 
 		const workouts: DayWorkout[] = [];
 		for (const file of files) {
-			const date = file.name.replace('.md', '');
+			const date = file.name.slice(0, 10);
 			const workout = await this.readWorkout(date);
 			if (workout) workouts.push(workout);
 		}
 		return workouts;
+	}
+
+	async getWorkoutCountsForYear(): Promise<Map<string, number>> {
+		const folder = this.app.vault.getAbstractFileByPath(this.workoutFolder);
+		if (!folder || !(folder instanceof TFolder)) return new Map();
+
+		const cutoff = this.dateMinusDays(new Date(), 364);
+
+		const files = folder.children.filter(
+			(f): f is TFile =>
+				f instanceof TFile &&
+				/^\d{4}-\d{2}-\d{2}\.md$/.test(f.name) &&
+				f.name.slice(0, 10) >= cutoff
+		);
+
+		const counts = new Map<string, number>();
+		const results = await Promise.all(
+			files.map(async file => {
+				const date = file.name.slice(0, 10);
+				const workout = await this.readWorkout(date);
+				return workout ? ([date, workout.exercises.length] as const) : null;
+			})
+		);
+		for (const r of results) {
+			if (r) counts.set(r[0], r[1]);
+		}
+		return counts;
+	}
+
+	private dateMinusDays(base: Date, days: number): string {
+		const d = new Date(base);
+		d.setDate(d.getDate() - days);
+		const y = d.getFullYear();
+		const m = String(d.getMonth() + 1).padStart(2, '0');
+		const dd = String(d.getDate()).padStart(2, '0');
+		return `${y}-${m}-${dd}`;
 	}
 
 	async ensureFolder(): Promise<void> {

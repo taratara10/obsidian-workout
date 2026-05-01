@@ -901,6 +901,158 @@
 	color: var(--wt-on-accent-container);
 }
 
+/* ── Contribution Graph ─────────────────────── */
+.workout-dashboard .wt-graph-section {
+	--wt-cell-size: 11px;
+	--wt-cell-gap: 2px;
+	--wt-level-0: #1f2728;
+	--wt-level-1: #2d6a2d;
+	--wt-level-2: #3d8b3d;
+	--wt-level-3: #4db34d;
+	--wt-level-4: #6cdd6c;
+
+	margin: 24px 20px 0;
+	padding: 16px 14px 20px;
+	background: var(--wt-surface);
+	border: 1px solid var(--wt-outline-soft);
+	border-radius: var(--wt-r-lg);
+}
+
+.workout-dashboard .wt-graph-title {
+	margin: 0 0 12px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--wt-on-surface-muted);
+	font-family: var(--wt-font-mono);
+}
+
+/* frame = side (fixed day labels) + outer (scrollable) */
+.workout-dashboard .wt-graph-frame {
+	display: flex;
+	align-items: flex-start;
+}
+
+.workout-dashboard .wt-graph-side {
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--wt-cell-gap);
+}
+
+/* Spacer that matches the height of the month label row */
+.workout-dashboard .wt-graph-month-spacer {
+	height: 15px;
+	flex-shrink: 0;
+}
+
+.workout-dashboard .wt-graph-outer {
+	flex: 1;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.workout-dashboard .wt-graph-outer::-webkit-scrollbar {
+	display: none;
+}
+
+.workout-dashboard .wt-graph-inner {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wt-cell-gap);
+	width: max-content;
+}
+
+.workout-dashboard .wt-graph-month-grid {
+	display: grid;
+	gap: var(--wt-cell-gap);
+	height: 15px;
+	align-items: flex-end;
+}
+
+.workout-dashboard .wt-graph-month-cell {
+	width: var(--wt-cell-size);
+	font-size: 9px;
+	color: var(--wt-on-surface-muted);
+	font-family: var(--wt-font-mono);
+	white-space: nowrap;
+	overflow: visible;
+	line-height: 1;
+}
+
+.workout-dashboard .wt-graph-day-label-col {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wt-cell-gap);
+}
+
+.workout-dashboard .wt-graph-day-label {
+	width: 26px;
+	height: var(--wt-cell-size);
+	font-size: 9px;
+	color: var(--wt-on-surface-muted);
+	font-family: var(--wt-font-mono);
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	padding-right: 4px;
+	box-sizing: border-box;
+	flex-shrink: 0;
+	white-space: nowrap;
+}
+
+/* Cell grid */
+.workout-dashboard .wt-graph-grid {
+	display: grid;
+	gap: var(--wt-cell-gap);
+}
+
+.workout-dashboard .wt-graph-col {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wt-cell-gap);
+}
+
+.workout-dashboard .wt-graph-cell {
+	width: var(--wt-cell-size);
+	height: var(--wt-cell-size);
+	border-radius: 2px;
+	flex-shrink: 0;
+	cursor: default;
+	transition: transform 80ms;
+}
+
+.workout-dashboard .wt-graph-cell:hover {
+	transform: scale(1.3);
+}
+
+.workout-dashboard .wt-graph-level-0 { background: var(--wt-level-0); }
+.workout-dashboard .wt-graph-level-1 { background: var(--wt-level-1); }
+.workout-dashboard .wt-graph-level-2 { background: var(--wt-level-2); }
+.workout-dashboard .wt-graph-level-3 { background: var(--wt-level-3); }
+.workout-dashboard .wt-graph-level-4 { background: var(--wt-level-4); }
+.workout-dashboard .wt-graph-future  { background: transparent; }
+
+
+/* Tooltip */
+.wt-graph-tooltip {
+	position: fixed;
+	transform: translate(-50%, -100%);
+	background: #2a2a35;
+	color: #e6e6ea;
+	font-size: 11px;
+	font-family: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+	padding: 4px 8px;
+	border-radius: 6px;
+	white-space: nowrap;
+	pointer-events: none;
+	z-index: 9999;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+	border: 1px solid #3a3a44;
+}
+
 /* ── Settings tab (kept lightweight) ────────── */
 .workout-settings-empty {
 	color: var(--text-muted);

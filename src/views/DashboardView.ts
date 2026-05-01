@@ -2,6 +2,7 @@ import { ItemView, Notice, WorkspaceLeaf } from 'obsidian';
 import WorkoutPlugin from '../main';
 import { DayWorkout, ExerciseMenu, ExerciseType, WorkoutEntry } from '../types';
 import { ExerciseInputModal } from '../modals/ExerciseInputModal';
+import { renderContributionGraph } from './ContributionGraph';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
 
@@ -30,6 +31,7 @@ export class DashboardView extends ItemView {
 	plugin: WorkoutPlugin;
 	private toastEl: HTMLElement | null = null;
 	private toastTimer: number | null = null;
+	private isRendering = false;
 
 	constructor(leaf: WorkspaceLeaf, plugin: WorkoutPlugin) {
 		super(leaf);
@@ -52,7 +54,26 @@ export class DashboardView extends ItemView {
 		await this.render();
 	}
 
+	async onClose(): Promise<void> {
+		if (this.toastTimer !== null) {
+			window.clearTimeout(this.toastTimer);
+			this.toastTimer = null;
+		}
+		// Remove any orphaned tooltips appended to document.body
+		document.querySelectorAll('.wt-graph-tooltip').forEach(el => el.remove());
+	}
+
 	async render(): Promise<void> {
+		if (this.isRendering) return;
+		this.isRendering = true;
+		try {
+			await this.doRender();
+		} finally {
+			this.isRendering = false;
+		}
+	}
+
+	private async doRender(): Promise<void> {
 		const root = this.contentEl;
 		root.empty();
 		root.addClass('workout-dashboard');
@@ -84,6 +105,10 @@ export class DashboardView extends ItemView {
 				this.renderDateGroup(list, workout);
 			}
 		}
+
+		// Contribution Graph
+		const counts = await this.plugin.fileManager.getWorkoutCountsForYear();
+		renderContributionGraph(canvas, counts);
 
 		// Toast container (hidden by default)
 		this.toastEl = canvas.createDiv('wt-toast');
