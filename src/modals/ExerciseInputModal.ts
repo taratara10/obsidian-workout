@@ -34,6 +34,8 @@ export class ExerciseInputModal extends Modal {
 			this.renderSetsForm(contentEl);
 		} else if (this.menu.type === 'emom') {
 			this.renderEmomForm(contentEl);
+		} else if (this.menu.type === 'routine') {
+			this.renderRoutineForm(contentEl);
 		} else {
 			this.renderCardioForm(contentEl);
 		}
@@ -350,6 +352,38 @@ export class ExerciseInputModal extends Modal {
 				void this.opts.onSave({
 					menu: this.menu.name,
 					type: 'cardio',
+					comment: comment.trim(),
+				});
+			},
+			canSave: () => true,
+			registerSaveRefresh: () => {},
+		});
+	}
+
+	private renderRoutineForm(container: HTMLElement): void {
+		const initial = this.opts.initial?.type === 'routine' ? this.opts.initial : null;
+		let comment = initial?.comment ?? '';
+
+		const stage = container.createDiv('wt-num-stage');
+		stage.createDiv({ cls: 'wt-num-label', text: 'ROUTINE' });
+
+		const commentInput = container.createEl('textarea', {
+			cls: 'wt-comment-input wt-cardio-comment',
+			attr: { placeholder: 'Stretch, mobility, yoga...' },
+		});
+		commentInput.value = comment;
+		commentInput.addEventListener('input', () => {
+			comment = commentInput.value;
+		});
+		window.setTimeout(() => commentInput.focus(), 50);
+
+		const footer = container.createDiv('wt-sheet-footer');
+		this.renderFooter(footer, {
+			onSave: () => {
+				this.close();
+				void this.opts.onSave({
+					menu: this.menu.name,
+					type: 'routine',
 					comment: comment.trim(),
 				});
 			},

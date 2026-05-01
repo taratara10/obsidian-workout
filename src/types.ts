@@ -1,4 +1,4 @@
-export type ExerciseType = 'sets' | 'emom' | 'cardio';
+export type ExerciseType = 'sets' | 'emom' | 'cardio' | 'routine';
 
 export interface ExerciseMenu {
 	name: string;
@@ -26,7 +26,13 @@ export interface CardioWorkoutEntry {
 	comment: string;
 }
 
-export type WorkoutEntry = SetsWorkoutEntry | EmomWorkoutEntry | CardioWorkoutEntry;
+export interface RoutineWorkoutEntry {
+	menu: string;
+	type: 'routine';
+	comment: string;
+}
+
+export type WorkoutEntry = SetsWorkoutEntry | EmomWorkoutEntry | CardioWorkoutEntry | RoutineWorkoutEntry;
 
 export interface DayWorkout {
 	date: string;

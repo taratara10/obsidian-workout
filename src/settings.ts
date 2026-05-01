@@ -54,6 +54,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 				.addOption('sets', 'Sets — reps per set')
 				.addOption('emom', 'Emom — reps × sets')
 				.addOption('cardio', 'Cardio — comment only')
+				.addOption('routine', 'Routine — comment only')
 				.setValue('sets')
 				.onChange(value => {
 					newType = value as ExerciseType;

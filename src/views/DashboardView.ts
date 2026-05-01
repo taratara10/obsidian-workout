@@ -16,6 +16,7 @@ const TYPE_GROUPS: { type: ExerciseType; label: string }[] = [
 	{ type: 'sets', label: 'SETS' },
 	{ type: 'emom', label: 'EMOM' },
 	{ type: 'cardio', label: 'CARDIO' },
+	{ type: 'routine', label: 'ROUTINE' },
 ];
 
 function formatDate(iso: string): { day: string; full: string; iso: string } {
@@ -171,7 +172,7 @@ export class DashboardView extends ItemView {
 
 		workout.exercises.forEach((ex, idx) => {
 			this.renderExerciseRow(cardList, workout.date, idx, ex);
-			if (ex.comment && ex.type !== 'cardio') {
+			if (ex.comment && ex.type !== 'cardio' && ex.type !== 'routine') {
 				cardList.createDiv({ cls: 'wt-row-comment', text: ex.comment });
 			}
 		});
@@ -221,7 +222,7 @@ export class DashboardView extends ItemView {
 			const totalEl = line.createSpan({ cls: 'wt-total-text' });
 			totalEl.appendText(String(ex.reps * ex.sets) + ' ');
 			totalEl.createSpan({ cls: 'wt-total-text-unit', text: 'total' });
-		} else if (ex.type === 'cardio' && ex.comment) {
+		} else if ((ex.type === 'cardio' || ex.type === 'routine') && ex.comment) {
 			const detail = line.createDiv('wt-row-detail');
 			detail.createSpan({ cls: 'wt-cardio-text', text: ex.comment });
 		}
