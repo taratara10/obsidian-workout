@@ -21,6 +21,8 @@ This is an Obsidian plugin (personal use, not for distribution) that records wor
 
 **Data layer** (`src/fileManager.ts`): All vault I/O goes through `FileManager`. Workout files live at `workout/YYYY-MM-DD.md` (configurable). The class handles read/write and returns typed `DayWorkout` objects. YAML is parsed via Obsidian's `parseYaml` and serialized manually (not via a library) — `menu` and `comment` are emitted as double-quoted strings with backslash/newline/tab escaped to keep the format predictable.
 
+**Exercise type registry** (`src/exerciseTypeGroups.ts`): Single source of truth for all exercise types. Exports `TYPE_GROUPS` (array of `{ type, label, commentOnly }`) and `COMMENT_ONLY_TYPES` (a `Set<ExerciseType>` of types whose only payload is `comment`). All rendering checks that branch on exercise type derive from this file — do not hardcode type strings elsewhere.
+
 **View** (`src/views/DashboardView.ts`): `DashboardView` extends `ItemView` and renders the dashboard DOM with Obsidian's `createEl`/`createDiv` API — no framework. Layout: top bar → header → chip board (exercises grouped by `sets` / `emom` / `cardio`) → date-grouped recent-workout list → toast. Tapping a chip opens `ExerciseInputModal` for a new entry; tapping an existing row opens the same modal in edit mode (`initial` set, `onDelete` provided). After save/update/delete the view re-renders and shows a transient toast.
 
 **Modal** (`src/modals/ExerciseInputModal.ts`): One modal serves all exercise types. Branches into `renderSetsForm` (numpad → chip list of per-set reps), `renderEmomForm` (REPS × SETS fields with focus-swap action), `renderCardioForm` (textarea + quick-preset chips), or `renderRoutineForm` (textarea only). The numpad is shared via `renderNumpad`. Footer renders Save/Update + Cancel/Delete depending on `isEditing`.
@@ -36,7 +38,7 @@ This is an Obsidian plugin (personal use, not for distribution) that records wor
 Edit these files in order:
 
 1. **`src/types.ts`** — add the type literal to `ExerciseType`, define a new `XxxWorkoutEntry` interface (at minimum `menu`, `type`, `comment`), and add it to the `WorkoutEntry` union.
-2. **`src/views/DashboardView.ts`** — add `{ type: 'xxx', label: 'XXX' }` to `TYPE_GROUPS`. If the type stores data in `comment`, also add it to the two exclusion checks (`ex.type !== 'xxx'` in `renderDateGroup`, and the `cardio || routine` condition in `renderExerciseRow`).
+2. **`src/exerciseTypeGroups.ts`** — add `{ type: 'xxx', label: 'XXX', commentOnly: <true|false> }` to `TYPE_GROUPS`. Set `commentOnly: true` if the type stores data only in `comment`. `COMMENT_ONLY_TYPES` is derived automatically — no other rendering changes needed.
 3. **`src/modals/ExerciseInputModal.ts`** — add an `else if` branch in `onOpen`, then implement `renderXxxForm`. Types that only need a text comment can copy `renderRoutineForm` verbatim and adjust the label and save payload.
 4. **`src/settings.ts`** — add `.addOption('xxx', 'Xxx — description')` to the type dropdown.
 5. **`src/fileManager.ts`** — update `serialize()` only if the new type stores fields beyond `comment`. The existing `else` branch already handles comment-only types.
