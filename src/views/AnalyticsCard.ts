@@ -1,5 +1,5 @@
 import { AnalyticsGroupData } from '../model/analytics';
-import { stringToHue } from '../utils/colorUtils';
+import { muscleGroupHue } from '../utils/colorUtils';
 
 export function renderAnalyticsCard(
 	container: HTMLElement,
@@ -27,7 +27,7 @@ export function renderAnalyticsCard(
 
 	// Group cards
 	for (const g of groups) {
-		const hue = stringToHue(g.group);
+		const hue = muscleGroupHue(g.group);
 		const gTotals = g.menus.reduce(
 			(acc, m) => ({ thisMonth: acc.thisMonth + m.thisMonth, prevMonth: acc.prevMonth + m.prevMonth }),
 			{ thisMonth: 0, prevMonth: 0 }
