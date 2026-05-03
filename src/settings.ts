@@ -18,7 +18,15 @@ export interface WorkoutPluginSettings {
 }
 
 export const DEFAULT_SETTINGS: WorkoutPluginSettings = {
-	menus: [],
+	menus: [
+		{ name: 'Pull-ups',            type: 'sets',    color: '#452C24' },
+		{ name: 'Inverted rows',       type: 'sets',    color: '#4A3520' },
+		{ name: 'Push-ups',            type: 'emom',    color: '#2B3347' },
+		{ name: 'Dips',                type: 'sets',    color: '#332B47' },
+		{ name: 'Squats',              type: 'sets',    color: '#293723' },
+		{ name: 'Hanging leg raises',  type: 'sets',    color: '#1F3530' },
+		{ name: 'Abs',                 type: 'routine', color: '#1F3530' },
+	],
 	workoutFolder: 'workout',
 	dashboardPath: 'workout/dashboard.md',
 };
