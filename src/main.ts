@@ -44,6 +44,12 @@ export default class WorkoutPlugin extends Plugin {
 
 	async loadSettings(): Promise<void> {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, (await this.loadData()) as Partial<WorkoutPluginSettings>);
+		for (const menu of this.settings.menus) {
+			if (!menu.muscleGroup) {
+				const preset = DEFAULT_SETTINGS.menus.find(m => m.name === menu.name);
+				if (preset?.muscleGroup) menu.muscleGroup = preset.muscleGroup;
+			}
+		}
 	}
 
 	async saveSettings(): Promise<void> {
