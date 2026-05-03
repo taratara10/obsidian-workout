@@ -1,5 +1,5 @@
 import { AnalyticsGroupData } from '../model/analytics';
-import { muscleGroupHue } from '../utils/colorUtils';
+import { stringToHue } from '../utils/colorUtils';
 
 export function renderAnalyticsCard(
 	container: HTMLElement,
@@ -27,7 +27,7 @@ export function renderAnalyticsCard(
 
 	// Group cards
 	for (const g of groups) {
-		const hue = muscleGroupHue(g.group);
+		const hue = stringToHue(g.group);
 		const gTotals = g.menus.reduce(
 			(acc, m) => ({ thisMonth: acc.thisMonth + m.thisMonth, prevMonth: acc.prevMonth + m.prevMonth }),
 			{ thisMonth: 0, prevMonth: 0 }
@@ -35,6 +35,7 @@ export function renderAnalyticsCard(
 		const beat = gTotals.thisMonth > gTotals.prevMonth;
 
 		const card = section.createDiv('wt-ac-card');
+		card.dataset.group = g.group;
 		card.style.setProperty('--wt-ac-gtone', `oklch(0.78 0.10 ${hue})`);
 		card.style.setProperty('--wt-ac-gtone-bg', `oklch(0.30 0.05 ${hue})`);
 
