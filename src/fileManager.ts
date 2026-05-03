@@ -70,6 +70,27 @@ export class FileManager {
 		return workouts;
 	}
 
+	async getWorkoutsInDateRange(from: string, to: string): Promise<DayWorkout[]> {
+		const folder = this.app.vault.getAbstractFileByPath(this.workoutFolder);
+		if (!folder || !(folder instanceof TFolder)) return [];
+
+		const files = folder.children.filter(
+			(f): f is TFile =>
+				f instanceof TFile &&
+				/^\d{4}-\d{2}-\d{2}\.md$/.test(f.name) &&
+				f.name.slice(0, 10) >= from &&
+				f.name.slice(0, 10) <= to
+		);
+
+		const results = await Promise.all(
+			files.map(async file => {
+				const date = file.name.slice(0, 10);
+				return this.readWorkout(date);
+			})
+		);
+		return results.filter((w): w is DayWorkout => w !== null);
+	}
+
 	async getWorkoutCountsForYear(): Promise<Map<string, number>> {
 		const folder = this.app.vault.getAbstractFileByPath(this.workoutFolder);
 		if (!folder || !(folder instanceof TFolder)) return new Map();

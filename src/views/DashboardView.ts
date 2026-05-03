@@ -3,16 +3,15 @@ import WorkoutPlugin from '../main';
 import { DayWorkout, ExerciseMenu, WorkoutEntry } from '../model/types';
 import { ExerciseInputModal } from '../modals/ExerciseInputModal';
 import { renderContributionGraph } from './ContributionGraph';
+import { renderAnalyticsCard } from './AnalyticsCard';
+import { computeAnalytics } from '../model/analytics';
 import { TYPE_GROUPS, COMMENT_ONLY_TYPES } from '../model/exerciseTypeGroups';
 import { BADGE_COLOR_PALETTE } from '../settings';
+import { stringToHue } from '../utils/colorUtils';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
 
-function menuHue(name: string): number {
-	let h = 0;
-	for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-	return h % 360;
-}
+const menuHue = stringToHue;
 
 const DAY_LABELS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTH_LABELS = [
@@ -111,6 +110,10 @@ export class DashboardView extends ItemView {
 		// Contribution Graph
 		const counts = await this.plugin.fileManager.getWorkoutCountsForYear();
 		renderContributionGraph(canvas, counts);
+
+		// Analytics Card
+		const { groups, thisMonthLabel, prevMonthLabel } = await this.buildAnalyticsGroups();
+		renderAnalyticsCard(canvas, groups, thisMonthLabel, prevMonthLabel);
 
 		// Toast container (hidden by default)
 		this.toastEl = canvas.createDiv('wt-toast');
@@ -309,6 +312,44 @@ export class DashboardView extends ItemView {
 		} catch (e) {
 			new Notice('Failed to delete: ' + (e as Error).message);
 		}
+	}
+
+	private async buildAnalyticsGroups(): Promise<{
+		groups: ReturnType<typeof computeAnalytics>;
+		thisMonthLabel: string;
+		prevMonthLabel: string;
+	}> {
+		const today = this.plugin.fileManager.getTodayDate();
+		const parts = today.split('-');
+		const y = Number(parts[0]);
+		const m = Number(parts[1]);
+
+		const thisMonthStart = `${y}-${String(m).padStart(2, '0')}-01`;
+		const thisMonthEnd = today;
+
+		const prevYear = m === 1 ? y - 1 : y;
+		const prevMonth = m === 1 ? 12 : m - 1;
+		const prevMonthStart = `${prevYear}-${String(prevMonth).padStart(2, '0')}-01`;
+		const prevMonthLastDay = new Date(y, m - 1, 0).getDate();
+		const prevMonthEnd = `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(prevMonthLastDay).padStart(2, '0')}`;
+
+		const [todayWorkouts, thisMonthWorkouts, prevMonthWorkouts] = await Promise.all([
+			this.plugin.fileManager.getWorkoutsInDateRange(today, today),
+			this.plugin.fileManager.getWorkoutsInDateRange(thisMonthStart, thisMonthEnd),
+			this.plugin.fileManager.getWorkoutsInDateRange(prevMonthStart, prevMonthEnd),
+		]);
+
+		const thisMonthLabel = `${MONTH_LABELS[m - 1]} ${y}`;
+		const prevMonthLabel = `${MONTH_LABELS[prevMonth - 1]} ${prevYear}`;
+
+		const groups = computeAnalytics(
+			todayWorkouts,
+			thisMonthWorkouts,
+			prevMonthWorkouts,
+			this.plugin.settings.menus
+		);
+
+		return { groups, thisMonthLabel, prevMonthLabel };
 	}
 
 	private showToast(msg: string): void {

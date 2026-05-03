@@ -1125,3 +1125,229 @@
 	color: var(--text-muted);
 	line-height: 1;
 }
+
+/* ── Analytics Card (Pattern A — Stacked rows) ─────────────── */
+
+.workout-dashboard .wt-ac-section {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 0 16px 32px;
+}
+
+.workout-dashboard .wt-ac-header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	padding: 4px 4px 0;
+}
+
+.workout-dashboard .wt-ac-h2 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	color: var(--wt-on-surface);
+}
+
+.workout-dashboard .wt-ac-period {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-family: var(--wt-font-mono);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--wt-on-surface-muted);
+}
+
+.workout-dashboard .wt-ac-period-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--wt-accent);
+	opacity: 0.8;
+}
+
+/* Column legend */
+.workout-dashboard .wt-ac-legend {
+	display: grid;
+	grid-template-columns: 1fr 52px 52px 52px;
+	gap: 4px;
+	padding: 0 14px;
+	margin-bottom: -4px;
+}
+
+.workout-dashboard .wt-ac-legend-spacer { }
+
+.workout-dashboard .wt-ac-col-h {
+	text-align: right;
+	font-family: var(--wt-font-mono);
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.10em;
+	text-transform: uppercase;
+	color: var(--wt-on-surface-muted);
+}
+
+/* Card chrome */
+.workout-dashboard .wt-ac-card {
+	background: var(--wt-surface);
+	border: 1px solid var(--wt-outline-soft);
+	border-radius: var(--wt-r-md);
+	overflow: hidden;
+}
+
+/* Group header */
+.workout-dashboard .wt-ac-group-head {
+	display: grid;
+	grid-template-columns: auto auto 1fr 52px 52px;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 14px;
+	background: linear-gradient(
+		180deg,
+		color-mix(in oklab, var(--wt-ac-gtone-bg) 35%, transparent) 0%,
+		transparent 100%
+	);
+	border-bottom: 1px solid var(--wt-outline-soft);
+}
+
+.workout-dashboard .wt-ac-group-tag {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 10px;
+	background: var(--wt-ac-gtone-bg);
+	color: var(--wt-ac-gtone);
+	border-radius: var(--wt-r-full);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+.workout-dashboard .wt-ac-group-count {
+	font-family: var(--wt-font-mono);
+	font-size: 10px;
+	font-weight: 600;
+	color: var(--wt-on-surface-muted);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.workout-dashboard .wt-ac-group-spacer { }
+
+/* Rows */
+.workout-dashboard .wt-ac-rows {
+	display: flex;
+	flex-direction: column;
+}
+
+.workout-dashboard .wt-ac-row {
+	display: grid;
+	grid-template-columns: 1fr 52px 52px 52px;
+	align-items: center;
+	gap: 4px;
+	padding: 10px 14px;
+	position: relative;
+}
+
+.workout-dashboard .wt-ac-row + .wt-ac-row::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 14px;
+	right: 14px;
+	height: 1px;
+	background: var(--wt-outline-soft);
+}
+
+.workout-dashboard .wt-ac-menu-cell {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+.workout-dashboard .wt-ac-type-tag {
+	font-family: var(--wt-font-mono);
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: 0.10em;
+	text-transform: uppercase;
+	color: var(--wt-on-surface-muted);
+	background: var(--wt-surface-2);
+	padding: 2px 6px;
+	border-radius: var(--wt-r-sm);
+	flex-shrink: 0;
+}
+
+.workout-dashboard .wt-ac-menu-name {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--wt-on-surface);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Numbers */
+.workout-dashboard .wt-ac-num {
+	font-family: var(--wt-font-mono);
+	font-size: 15px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.01em;
+	color: var(--wt-on-surface);
+	text-align: right;
+}
+
+.workout-dashboard .wt-ac-num-sm { font-size: 13px; }
+
+.workout-dashboard .wt-ac-muted {
+	color: var(--wt-on-surface-muted);
+	font-weight: 500;
+}
+
+.workout-dashboard .wt-ac-num-empty {
+	color: var(--wt-on-surface-muted);
+	opacity: 0.45;
+	font-weight: 500;
+	text-align: right;
+	font-family: var(--wt-font-mono);
+	font-variant-numeric: tabular-nums;
+}
+
+/* Beat-prev highlight */
+.workout-dashboard .wt-ac-beat {
+	color: oklch(0.82 0.13 145);
+	display: inline-flex;
+	align-items: baseline;
+	justify-content: flex-end;
+	gap: 3px;
+}
+
+.workout-dashboard .wt-ac-beat-mark {
+	font-size: 9px;
+	line-height: 1;
+	color: oklch(0.82 0.13 145);
+	transform: translateY(-1px);
+}
+
+/* Today badge */
+.workout-dashboard .wt-ac-today-badge {
+	justify-self: end;
+	display: inline-flex;
+	align-items: center;
+	height: 22px;
+	padding: 0 9px;
+	background: oklch(0.30 0.05 145);
+	color: oklch(0.85 0.13 145);
+	border-radius: var(--wt-r-full);
+	font-family: var(--wt-font-mono);
+	font-size: 12px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	letter-spacing: -0.01em;
+	line-height: 1;
+}
