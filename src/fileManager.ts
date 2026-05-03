@@ -1,5 +1,5 @@
 import { App, TFile, TFolder, parseYaml } from 'obsidian';
-import { DayWorkout, WorkoutEntry } from './types';
+import { DayWorkout, WorkoutEntry } from './model/types';
 
 export class FileManager {
 	constructor(

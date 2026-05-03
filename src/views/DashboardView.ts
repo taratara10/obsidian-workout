@@ -1,9 +1,9 @@
 import { ItemView, Notice, WorkspaceLeaf } from 'obsidian';
 import WorkoutPlugin from '../main';
-import { DayWorkout, ExerciseMenu, WorkoutEntry } from '../types';
+import { DayWorkout, ExerciseMenu, WorkoutEntry } from '../model/types';
 import { ExerciseInputModal } from '../modals/ExerciseInputModal';
 import { renderContributionGraph } from './ContributionGraph';
-import { TYPE_GROUPS, COMMENT_ONLY_TYPES } from '../exerciseTypeGroups';
+import { TYPE_GROUPS, COMMENT_ONLY_TYPES } from '../model/exerciseTypeGroups';
 import { BADGE_COLOR_PALETTE } from '../settings';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';

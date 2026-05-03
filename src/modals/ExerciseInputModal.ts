@@ -1,5 +1,5 @@
 import { App, Modal } from 'obsidian';
-import { ExerciseMenu, WorkoutEntry } from '../types';
+import { ExerciseMenu, WorkoutEntry } from '../model/types';
 
 const CARDIO_PRESETS = ['Sprint', 'Swim', 'Jog'];
 

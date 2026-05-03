@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import { ExerciseMenu, ExerciseType } from './types';
+import { ExerciseMenu, ExerciseType } from './model/types';
 import WorkoutPlugin from './main';
 
 export const BADGE_COLOR_PALETTE = [
