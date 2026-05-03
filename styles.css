@@ -212,7 +212,7 @@
 .workout-dashboard .wt-date-day {
 	font-size: 13px;
 	font-weight: 600;
-	color: var(--wt-accent);
+	color: var(--wt-on-surface);
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 }
@@ -249,11 +249,11 @@
 	gap: 8px;
 	padding: 12px 14px;
 	position: relative;
-	border-left: 3px solid var(--wt-accent);
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 	transition: background 120ms;
 }
+
 
 .workout-dashboard .wt-row:hover {
 	background: rgba(255, 255, 255, 0.025);
@@ -272,7 +272,7 @@
 	content: '';
 	position: absolute;
 	top: 0;
-	left: 3px;
+	left: 0;
 	right: 0;
 	height: 1px;
 	background: var(--wt-outline-soft);
@@ -409,15 +409,15 @@
 	display: flex;
 	gap: 8px;
 	align-items: flex-start;
-	border-left: 3px solid var(--wt-accent);
 	background: var(--wt-surface);
 	position: relative;
 }
 
+
 .workout-dashboard .wt-card-list > .wt-row-comment:not(:last-child)::after {
 	content: '';
 	position: absolute;
-	left: 3px;
+	left: 0;
 	right: 0;
 	bottom: 0;
 	height: 1px;

@@ -1,7 +1,7 @@
 import { App, Modal } from 'obsidian';
 import { ExerciseMenu, WorkoutEntry } from '../types';
 
-const CARDIO_PRESETS = ['Sprint', 'Swim', 'Jog', 'Bike', 'Jump rope'];
+const CARDIO_PRESETS = ['Sprint', 'Swim', 'Jog'];
 
 export interface ExerciseInputOptions {
 	initial?: WorkoutEntry;

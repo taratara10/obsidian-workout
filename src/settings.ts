@@ -121,6 +121,24 @@ export class WorkoutSettingTab extends PluginSettingTab {
 			new Setting(container)
 				.setName(menu.name)
 				.setDesc(menu.type)
+				.addColorPicker(picker =>
+					picker
+						.setValue(menu.color ?? '#808080')
+						.onChange(async value => {
+							menu.color = value;
+							await this.plugin.saveSettings();
+						})
+				)
+				.addExtraButton(btn =>
+					btn
+						.setIcon('rotate-ccw')
+						.setTooltip('Clear color')
+						.onClick(async () => {
+							delete menu.color;
+							await this.plugin.saveSettings();
+							this.renderMenuList(container);
+						})
+				)
 				.addButton(btn =>
 					btn
 						.setButtonText('Delete')

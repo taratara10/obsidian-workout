@@ -3,6 +3,7 @@ export type ExerciseType = 'sets' | 'emom' | 'cardio' | 'routine';
 export interface ExerciseMenu {
 	name: string;
 	type: ExerciseType;
+	color?: string;
 }
 
 export interface SetsWorkoutEntry {

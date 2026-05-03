@@ -7,6 +7,12 @@ import { TYPE_GROUPS, COMMENT_ONLY_TYPES } from '../exerciseTypeGroups';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
 
+function menuHue(name: string): number {
+	let h = 0;
+	for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+	return h % 360;
+}
+
 const DAY_LABELS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTH_LABELS = [
 	'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -152,6 +158,18 @@ export class DashboardView extends ItemView {
 		});
 	}
 
+	private applyTagColor(tagEl: HTMLElement, menuName: string): void {
+		const stored = this.plugin.settings.menus.find(m => m.name === menuName)?.color;
+		if (stored) {
+			tagEl.style.color = stored;
+			tagEl.style.background = `color-mix(in oklab, var(--wt-surface-2) 70%, ${stored} 30%)`;
+		} else {
+			const hue = menuHue(menuName);
+			tagEl.style.color = `oklch(0.85 0.06 ${hue})`;
+			tagEl.style.background = `oklch(0.32 0.04 ${hue})`;
+		}
+	}
+
 	private renderDateGroup(container: HTMLElement, workout: DayWorkout): void {
 		const group = container.createDiv('wt-date-group');
 		const f = formatDate(workout.date);
@@ -167,7 +185,7 @@ export class DashboardView extends ItemView {
 		workout.exercises.forEach((ex, idx) => {
 			this.renderExerciseRow(cardList, workout.date, idx, ex);
 			if (ex.comment && !COMMENT_ONLY_TYPES.has(ex.type)) {
-				cardList.createDiv({ cls: 'wt-row-comment', text: ex.comment });
+				cardList.createDiv({ cls: `wt-row-comment wt-row-type-${ex.type}`, text: ex.comment });
 			}
 		});
 	}
@@ -178,7 +196,7 @@ export class DashboardView extends ItemView {
 		idx: number,
 		ex: WorkoutEntry
 	): void {
-		const row = container.createDiv('wt-row');
+		const row = container.createDiv(`wt-row wt-row-type-${ex.type}`);
 		row.setAttr('role', 'button');
 		row.setAttr('tabindex', '0');
 		const onClick = () => this.openEditModal(date, idx, ex);
@@ -193,7 +211,8 @@ export class DashboardView extends ItemView {
 		// Single-row layout: [type tag] name → detail chips → total
 		const line = row.createDiv('wt-row-line');
 		const name = line.createDiv('wt-row-name');
-		name.createSpan({ cls: 'wt-type-tag', text: ex.type });
+		const typeTag = name.createSpan({ cls: 'wt-type-tag', text: ex.type });
+		this.applyTagColor(typeTag, ex.menu);
 		name.appendText(ex.menu);
 
 		if (ex.type === 'sets' && ex.sets.length > 0) {
