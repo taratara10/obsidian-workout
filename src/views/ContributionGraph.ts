@@ -129,6 +129,13 @@ export function renderContributionGraph(
 		}
 	}
 
-	// Scroll to rightmost (current week) after layout
-	requestAnimationFrame(() => { outer.scrollLeft = outer.scrollWidth; });
+	// Scroll to rightmost (current week) after layout.
+	// Double rAF is intentional: the first frame fires before Obsidian finishes
+	// measuring the flex container, so scrollWidth is still 0 at that point.
+	// The second frame runs after the browser has completed layout, giving the
+	// correct scrollWidth. Do NOT collapse this to a single rAF — it will
+	// regress to opening at the left edge instead of the current week.
+	requestAnimationFrame(() => {
+		requestAnimationFrame(() => { outer.scrollLeft = outer.scrollWidth; });
+	});
 }

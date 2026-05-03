@@ -4,6 +4,7 @@ import { DayWorkout, ExerciseMenu, WorkoutEntry } from '../types';
 import { ExerciseInputModal } from '../modals/ExerciseInputModal';
 import { renderContributionGraph } from './ContributionGraph';
 import { TYPE_GROUPS, COMMENT_ONLY_TYPES } from '../exerciseTypeGroups';
+import { BADGE_COLOR_PALETTE } from '../settings';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
 
@@ -161,8 +162,9 @@ export class DashboardView extends ItemView {
 	private applyTagColor(tagEl: HTMLElement, menuName: string): void {
 		const stored = this.plugin.settings.menus.find(m => m.name === menuName)?.color;
 		if (stored) {
-			tagEl.style.color = stored;
-			tagEl.style.background = `color-mix(in oklab, var(--wt-surface-2) 70%, ${stored} 30%)`;
+			const entry = BADGE_COLOR_PALETTE.find(c => c.bg === stored);
+			tagEl.style.background = stored;
+			tagEl.style.color = entry?.fg ?? 'var(--wt-on-surface)';
 		} else {
 			const hue = menuHue(menuName);
 			tagEl.style.color = `oklch(0.85 0.06 ${hue})`;

@@ -2,6 +2,15 @@ import { App, PluginSettingTab, Setting } from 'obsidian';
 import { ExerciseMenu, ExerciseType } from './types';
 import WorkoutPlugin from './main';
 
+export const BADGE_COLOR_PALETTE = [
+	{ id: 'warm-1',  name: 'Cocoa',  bg: '#452C24', fg: '#E8B8A8' },
+	{ id: 'warm-2',  name: 'Umber',  bg: '#4A3520', fg: '#EDCBA0' },
+	{ id: 'cool-1',  name: 'Navy',   bg: '#2B3347', fg: '#A8B8E8' },
+	{ id: 'cool-2',  name: 'Indigo', bg: '#332B47', fg: '#C8A8ED' },
+	{ id: 'green-1', name: 'Forest', bg: '#293723', fg: '#A8D89A' },
+	{ id: 'green-2', name: 'Teal',   bg: '#1F3530', fg: '#9ADBD0' },
+] as const;
+
 export interface WorkoutPluginSettings {
 	menus: ExerciseMenu[];
 	workoutFolder: string;
@@ -118,27 +127,9 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		}
 
 		for (const [i, menu] of this.plugin.settings.menus.entries()) {
-			new Setting(container)
+			const setting = new Setting(container)
 				.setName(menu.name)
 				.setDesc(menu.type)
-				.addColorPicker(picker =>
-					picker
-						.setValue(menu.color ?? '#808080')
-						.onChange(async value => {
-							menu.color = value;
-							await this.plugin.saveSettings();
-						})
-				)
-				.addExtraButton(btn =>
-					btn
-						.setIcon('rotate-ccw')
-						.setTooltip('Clear color')
-						.onClick(async () => {
-							delete menu.color;
-							await this.plugin.saveSettings();
-							this.renderMenuList(container);
-						})
-				)
 				.addButton(btn =>
 					btn
 						.setButtonText('Delete')
@@ -149,6 +140,33 @@ export class WorkoutSettingTab extends PluginSettingTab {
 							this.display();
 						})
 				);
+
+			const swatchWrap = setting.controlEl.createDiv('workout-settings-swatches');
+			swatchWrap.style.order = '-1';
+
+			for (const palette of BADGE_COLOR_PALETTE) {
+				const swatch = swatchWrap.createEl('button', {
+					cls: 'wt-swatch' + (menu.color === palette.bg ? ' wt-swatch--active' : ''),
+					attr: { type: 'button', 'aria-label': palette.name, title: palette.name },
+				});
+				swatch.style.background = palette.bg;
+				swatch.addEventListener('click', async () => {
+					menu.color = palette.bg;
+					await this.plugin.saveSettings();
+					this.renderMenuList(container);
+				});
+			}
+
+			const noneSwatch = swatchWrap.createEl('button', {
+				cls: 'wt-swatch wt-swatch--none' + (!menu.color ? ' wt-swatch--active' : ''),
+				attr: { type: 'button', 'aria-label': 'Auto color', title: 'Auto color' },
+				text: '−',
+			});
+			noneSwatch.addEventListener('click', async () => {
+				delete menu.color;
+				await this.plugin.saveSettings();
+				this.renderMenuList(container);
+			});
 		}
 	}
 }

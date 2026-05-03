@@ -1062,3 +1062,47 @@
 .workout-settings-menu-list {
 	margin-bottom: 24px;
 }
+
+.workout-settings-swatches {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	flex-wrap: wrap;
+	margin-right: 8px;
+}
+
+.wt-swatch {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 2px solid transparent;
+	cursor: pointer;
+	padding: 0;
+	flex-shrink: 0;
+}
+
+.wt-swatch:hover,
+.wt-swatch:focus-visible {
+	border-color: var(--interactive-accent);
+	outline: none;
+}
+
+.wt-swatch:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 2px;
+}
+
+.wt-swatch--active {
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 1px var(--interactive-accent);
+}
+
+.wt-swatch--none {
+	background: var(--background-modifier-border);
+	font-size: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-muted);
+	line-height: 1;
+}
