@@ -20,6 +20,11 @@
             "type": "command",
             "command": "npm run lint 2>&1",
             "statusMessage": "Running lint..."
+          },
+          {
+            "type": "command",
+            "command": "git diff --quiet && git diff --cached --quiet || echo '⚠️  作業後はコミットしてください (uncommitted changes remain)'",
+            "statusMessage": "Checking for uncommitted changes..."
           }
         ]
       }
