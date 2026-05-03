@@ -1,9 +1,16 @@
 export type ExerciseType = 'sets' | 'emom' | 'cardio' | 'routine';
 
+export type MuscleGroup =
+	| 'chest'
+	| 'back'
+	| 'abs'
+	| 'legs';
+
 export interface ExerciseMenu {
 	name: string;
 	type: ExerciseType;
 	color?: string;
+	muscleGroup?: MuscleGroup;
 }
 
 export interface SetsWorkoutEntry {

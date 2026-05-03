@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import { ExerciseMenu, ExerciseType } from './model/types';
+import { ExerciseMenu, ExerciseType, MuscleGroup } from './model/types';
 import WorkoutPlugin from './main';
 
 export const BADGE_COLOR_PALETTE = [
@@ -19,13 +19,13 @@ export interface WorkoutPluginSettings {
 
 export const DEFAULT_SETTINGS: WorkoutPluginSettings = {
 	menus: [
-		{ name: 'Pull-ups',            type: 'sets',    color: '#452C24' },
-		{ name: 'Inverted rows',       type: 'sets',    color: '#4A3520' },
-		{ name: 'Push-ups',            type: 'emom',    color: '#2B3347' },
-		{ name: 'Dips',                type: 'sets',    color: '#332B47' },
-		{ name: 'Squats',              type: 'sets',    color: '#293723' },
-		{ name: 'Hanging leg raises',  type: 'sets',    color: '#1F3530' },
-		{ name: 'Abs',                 type: 'routine', color: '#1F3530' },
+		{ name: 'Pull-ups',            type: 'sets',    color: '#452C24', muscleGroup: 'back' },
+		{ name: 'Inverted rows',       type: 'sets',    color: '#4A3520', muscleGroup: 'back' },
+		{ name: 'Push-ups',            type: 'emom',    color: '#2B3347', muscleGroup: 'chest' },
+		{ name: 'Dips',                type: 'sets',    color: '#332B47', muscleGroup: 'chest' },
+		{ name: 'Squats',              type: 'sets',    color: '#293723', muscleGroup: 'legs' },
+		{ name: 'Hanging leg raises',  type: 'sets',    color: '#1F3530', muscleGroup: 'abs' },
+		{ name: 'Abs',                 type: 'routine', color: '#1F3530', muscleGroup: 'abs' },
 	],
 	workoutFolder: 'workout',
 	dashboardPath: 'workout/dashboard.md',
@@ -55,6 +55,7 @@ export class WorkoutSettingTab extends PluginSettingTab {
 
 		let newName = '';
 		let newType: ExerciseType = 'sets';
+		let newMuscleGroup: MuscleGroup | undefined = undefined;
 
 		new Setting(containerEl)
 			.setName('Exercise name')
@@ -78,6 +79,19 @@ export class WorkoutSettingTab extends PluginSettingTab {
 				})
 		);
 
+		new Setting(containerEl).setName('Muscle group').addDropdown(drop =>
+			drop
+				.addOption('', '— none —')
+				.addOption('chest', 'Chest')
+				.addOption('back',  'Back')
+				.addOption('abs',   'Abs')
+				.addOption('legs',  'Legs')
+				.setValue('')
+				.onChange(value => {
+					newMuscleGroup = value ? value as MuscleGroup : undefined;
+				})
+		);
+
 		new Setting(containerEl).addButton(btn =>
 			btn
 				.setButtonText('Add')
@@ -87,7 +101,9 @@ export class WorkoutSettingTab extends PluginSettingTab {
 					if (!trimmed) return;
 					const duplicate = this.plugin.settings.menus.some(m => m.name === trimmed);
 					if (duplicate) return;
-					this.plugin.settings.menus.push({ name: trimmed, type: newType });
+					const entry: ExerciseMenu = { name: trimmed, type: newType };
+					if (newMuscleGroup) entry.muscleGroup = newMuscleGroup;
+					this.plugin.settings.menus.push(entry);
 					await this.plugin.saveSettings();
 					this.display();
 				})
@@ -135,9 +151,10 @@ export class WorkoutSettingTab extends PluginSettingTab {
 		}
 
 		for (const [i, menu] of this.plugin.settings.menus.entries()) {
+			const desc = menu.muscleGroup ? `${menu.type} · ${menu.muscleGroup}` : menu.type;
 			const setting = new Setting(container)
 				.setName(menu.name)
-				.setDesc(menu.type)
+				.setDesc(desc)
 				.addButton(btn =>
 					btn
 						.setButtonText('Delete')

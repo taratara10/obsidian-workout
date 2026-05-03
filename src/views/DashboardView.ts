@@ -144,6 +144,9 @@ export class DashboardView extends ItemView {
 				});
 				chip.createSpan({ cls: 'wt-chip-plus', text: '+' });
 				chip.createSpan({ cls: 'wt-chip-name', text: menu.name });
+				if (menu.muscleGroup) {
+					chip.createSpan({ cls: 'wt-chip-muscle', text: menu.muscleGroup });
+				}
 				chip.addEventListener('click', () => this.openInputModal(menu));
 			}
 		}
@@ -210,12 +213,16 @@ export class DashboardView extends ItemView {
 			}
 		});
 
-		// Single-row layout: [type tag] name → detail chips → total
+		// Single-row layout: [type tag] name [muscle group] → detail chips → total
 		const line = row.createDiv('wt-row-line');
 		const name = line.createDiv('wt-row-name');
 		const typeTag = name.createSpan({ cls: 'wt-type-tag', text: ex.type });
 		this.applyTagColor(typeTag, ex.menu);
 		name.appendText(ex.menu);
+		const muscleGroup = this.plugin.settings.menus.find(m => m.name === ex.menu)?.muscleGroup;
+		if (muscleGroup) {
+			name.createSpan({ cls: 'wt-muscle-tag', text: muscleGroup });
+		}
 
 		if (ex.type === 'sets' && ex.sets.length > 0) {
 			const detail = line.createDiv('wt-row-detail');

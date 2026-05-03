@@ -187,6 +187,14 @@
 	line-height: 1;
 }
 
+.workout-dashboard .wt-chip-muscle {
+	font-size: 10px;
+	font-weight: 500;
+	opacity: 0.6;
+	letter-spacing: 0.02em;
+	line-height: 1;
+}
+
 .workout-dashboard .wt-chip-empty {
 	color: var(--wt-on-surface-muted);
 	font-size: 13px;
@@ -306,6 +314,17 @@
 	text-transform: uppercase;
 	vertical-align: 2px;
 	font-family: var(--wt-font-mono);
+}
+
+.workout-dashboard .wt-muscle-tag {
+	display: inline-block;
+	font-size: 10px;
+	font-weight: 500;
+	color: var(--wt-on-surface-muted);
+	opacity: 0.7;
+	margin-left: 5px;
+	letter-spacing: 0.02em;
+	vertical-align: 2px;
 }
 
 .workout-dashboard .wt-total-text {
