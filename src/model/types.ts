@@ -9,7 +9,6 @@ export type MuscleGroup =
 export interface ExerciseMenu {
 	name: string;
 	type: ExerciseType;
-	color?: string;
 	muscleGroup?: MuscleGroup;
 }
 

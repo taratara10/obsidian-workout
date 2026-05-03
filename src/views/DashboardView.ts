@@ -6,7 +6,6 @@ import { renderContributionGraph } from './ContributionGraph';
 import { renderAnalyticsCard } from './AnalyticsCard';
 import { computeAnalytics } from '../model/analytics';
 import { TYPE_GROUPS, COMMENT_ONLY_TYPES } from '../model/exerciseTypeGroups';
-import { BADGE_COLOR_PALETTE } from '../settings';
 import { stringToHue } from '../utils/colorUtils';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
@@ -165,19 +164,6 @@ export class DashboardView extends ItemView {
 		});
 	}
 
-	private applyTagColor(tagEl: HTMLElement, menuName: string): void {
-		const stored = this.plugin.settings.menus.find(m => m.name === menuName)?.color;
-		if (stored) {
-			const entry = BADGE_COLOR_PALETTE.find(c => c.bg === stored);
-			tagEl.style.background = stored;
-			tagEl.style.color = entry?.fg ?? 'var(--wt-on-surface)';
-		} else {
-			const hue = menuHue(menuName);
-			tagEl.style.color = `oklch(0.85 0.06 ${hue})`;
-			tagEl.style.background = `oklch(0.32 0.04 ${hue})`;
-		}
-	}
-
 	private renderDateGroup(container: HTMLElement, workout: DayWorkout): void {
 		const group = container.createDiv('wt-date-group');
 		const f = formatDate(workout.date);
@@ -205,6 +191,7 @@ export class DashboardView extends ItemView {
 		ex: WorkoutEntry
 	): void {
 		const row = container.createDiv(`wt-row wt-row-type-${ex.type}`);
+		row.style.setProperty('--wt-menu-hue', String(menuHue(ex.menu)));
 		row.setAttr('role', 'button');
 		row.setAttr('tabindex', '0');
 		const onClick = () => this.openEditModal(date, idx, ex);
@@ -219,8 +206,7 @@ export class DashboardView extends ItemView {
 		// Single-row layout: [type tag] name [muscle group] → detail chips → total
 		const line = row.createDiv('wt-row-line');
 		const name = line.createDiv('wt-row-name');
-		const typeTag = name.createSpan({ cls: 'wt-type-tag', text: ex.type });
-		this.applyTagColor(typeTag, ex.menu);
+		name.createSpan({ cls: 'wt-type-tag', text: ex.type });
 		name.appendText(ex.menu);
 		const muscleGroup = this.plugin.settings.menus.find(m => m.name === ex.menu)?.muscleGroup;
 		if (muscleGroup) {

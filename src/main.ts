@@ -49,6 +49,7 @@ export default class WorkoutPlugin extends Plugin {
 				const preset = DEFAULT_SETTINGS.menus.find(m => m.name === menu.name);
 				if (preset?.muscleGroup) menu.muscleGroup = preset.muscleGroup;
 			}
+			delete (menu as unknown as Record<string, unknown>)['color'];
 		}
 	}
 
