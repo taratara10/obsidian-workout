@@ -106,9 +106,12 @@ export class DashboardView extends ItemView {
 		const counts = await this.plugin.fileManager.getWorkoutCountsForYear();
 		renderContributionGraph(canvas, counts);
 
-		// List
+		// Timeline section
+		const timelineSection = canvas.createDiv('wt-timeline-section');
+		timelineSection.createEl('h2', { text: 'Timeline', cls: 'wt-timeline-title' });
+
 		const workouts = await this.plugin.fileManager.getRecentWorkouts(5);
-		const list = canvas.createDiv('wt-list');
+		const list = timelineSection.createDiv('wt-list');
 
 		if (workouts.length === 0) {
 			this.renderEmpty(list);

@@ -197,6 +197,20 @@
 	text-align: center;
 }
 
+/* ── Timeline section ───────────────────────── */
+.workout-dashboard .wt-timeline-section {
+	margin-top: 28px;
+}
+
+.workout-dashboard .wt-timeline-title {
+	margin: 0 20px 16px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--wt-muted);
+}
+
 /* ── List & date groups ─────────────────────── */
 .workout-dashboard .wt-list {
 	padding: 0 20px;
