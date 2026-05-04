@@ -102,6 +102,10 @@ export class DashboardView extends ItemView {
 		// Quick-add chip board
 		this.renderChipBoard(canvas);
 
+		// Contribution Graph
+		const counts = await this.plugin.fileManager.getWorkoutCountsForYear();
+		renderContributionGraph(canvas, counts);
+
 		// List
 		const workouts = await this.plugin.fileManager.getRecentWorkouts(5);
 		const list = canvas.createDiv('wt-list');
@@ -114,11 +118,7 @@ export class DashboardView extends ItemView {
 			}
 		}
 
-		// Contribution Graph
-		const counts = await this.plugin.fileManager.getWorkoutCountsForYear();
-		renderContributionGraph(canvas, counts);
-
-		// Divider + space between contribution and analytics
+		// Divider + space between list and analytics
 		canvas.createEl('hr', { cls: 'wt-section-divider' });
 		canvas.createDiv('wt-section-spacer');
 
