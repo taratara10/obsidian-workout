@@ -1318,3 +1318,14 @@
 	letter-spacing: -0.01em;
 	line-height: 1;
 }
+
+/* Section divider between contribution graph and analytics */
+.workout-dashboard .wt-section-divider {
+	border: none;
+	border-top: 1px solid oklch(0.30 0.02 250);
+	margin: 0;
+}
+
+.workout-dashboard .wt-section-spacer {
+	height: 16px;
+}

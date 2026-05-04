@@ -110,6 +110,10 @@ export class DashboardView extends ItemView {
 		const counts = await this.plugin.fileManager.getWorkoutCountsForYear();
 		renderContributionGraph(canvas, counts);
 
+		// Divider + space between contribution and analytics
+		canvas.createEl('hr', { cls: 'wt-section-divider' });
+		canvas.createDiv('wt-section-spacer');
+
 		// Analytics Card
 		const { groups, thisMonthLabel, prevMonthLabel } = await this.buildAnalyticsGroups();
 		renderAnalyticsCard(canvas, groups, thisMonthLabel, prevMonthLabel);
