@@ -197,6 +197,15 @@
 	text-align: center;
 }
 
+/* ── Shared section headings ─────────────────── */
+.workout-dashboard .wt-timeline-title,
+.workout-dashboard .wt-ac-h2 {
+	font-size: 22px;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	color: var(--wt-on-surface);
+}
+
 /* ── Timeline section ───────────────────────── */
 .workout-dashboard .wt-timeline-section {
 	margin-top: 28px;
@@ -204,11 +213,6 @@
 
 .workout-dashboard .wt-timeline-title {
 	margin: 0 20px 16px;
-	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	color: var(--wt-muted);
 }
 
 /* ── List & date groups ─────────────────────── */
@@ -1110,10 +1114,6 @@
 
 .workout-dashboard .wt-ac-h2 {
 	margin: 0;
-	font-size: 22px;
-	font-weight: 600;
-	letter-spacing: -0.02em;
-	color: var(--wt-on-surface);
 }
 
 .workout-dashboard .wt-ac-period {
