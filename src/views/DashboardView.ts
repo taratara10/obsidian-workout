@@ -6,11 +6,19 @@ import { renderContributionGraph } from './ContributionGraph';
 import { renderAnalyticsCard } from './AnalyticsCard';
 import { computeAnalytics } from '../model/analytics';
 import { TYPE_GROUPS, COMMENT_ONLY_TYPES } from '../model/exerciseTypeGroups';
-import { stringToHue } from '../utils/colorUtils';
 
 export const WORKOUT_VIEW_TYPE = 'workout-dashboard';
 
-const menuHue = stringToHue;
+const MUSCLE_GROUP_HUE: Record<string, number> = {
+	back: 250,
+	chest: 20,
+	abs: 90,
+	legs: 145,
+};
+
+function groupHue(muscleGroup?: string): number {
+	return muscleGroup ? (MUSCLE_GROUP_HUE[muscleGroup] ?? 270) : 270;
+}
 
 const DAY_LABELS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTH_LABELS = [
@@ -148,6 +156,7 @@ export class DashboardView extends ItemView {
 				const chip = row.createEl('button', {
 					cls: `wt-chip wt-chip-${menu.type}`,
 				});
+				chip.style.setProperty('--wt-menu-hue', String(groupHue(menu.muscleGroup)));
 				chip.createSpan({ cls: 'wt-chip-plus', text: '+' });
 				chip.createSpan({ cls: 'wt-chip-name', text: menu.name });
 				if (menu.muscleGroup) {
@@ -195,7 +204,8 @@ export class DashboardView extends ItemView {
 		ex: WorkoutEntry
 	): void {
 		const row = container.createDiv(`wt-row wt-row-type-${ex.type}`);
-		row.style.setProperty('--wt-menu-hue', String(menuHue(ex.menu)));
+		const rowMuscleGroup = this.plugin.settings.menus.find(m => m.name === ex.menu)?.muscleGroup;
+		row.style.setProperty('--wt-menu-hue', String(groupHue(rowMuscleGroup)));
 		row.setAttr('role', 'button');
 		row.setAttr('tabindex', '0');
 		const onClick = () => this.openEditModal(date, idx, ex);

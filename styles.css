@@ -171,16 +171,11 @@
 	width: 18px;
 	height: 18px;
 	border-radius: 50%;
-	background: var(--wt-accent-container);
-	color: var(--wt-on-accent-container);
+	background: oklch(0.30 0.05 var(--wt-menu-hue, 270));
+	color: oklch(0.78 0.10 var(--wt-menu-hue, 270));
 	font-size: 14px;
 	font-weight: 700;
 	line-height: 1;
-}
-
-.workout-dashboard .wt-chip-cardio .wt-chip-plus {
-	background: var(--wt-surface-3);
-	color: var(--wt-accent);
 }
 
 .workout-dashboard .wt-chip-name {
