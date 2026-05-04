@@ -1159,18 +1159,18 @@
 }
 
 .workout-dashboard .wt-ac-card[data-group="back"] {
-	--wt-ac-gtone: oklch(0.78 0.10 159);
-	--wt-ac-gtone-bg: oklch(0.30 0.05 159);
+	--wt-ac-gtone: oklch(0.75 0.20 250);
+	--wt-ac-gtone-bg: oklch(0.28 0.09 250);
 }
 
 .workout-dashboard .wt-ac-card[data-group="chest"] {
-	--wt-ac-gtone: oklch(0.78 0.10 37);
-	--wt-ac-gtone-bg: oklch(0.30 0.05 37);
+	--wt-ac-gtone: oklch(0.72 0.22 20);
+	--wt-ac-gtone-bg: oklch(0.28 0.10 20);
 }
 
 .workout-dashboard .wt-ac-card[data-group="abs"] {
-	--wt-ac-gtone: oklch(0.78 0.10 98);
-	--wt-ac-gtone-bg: oklch(0.30 0.05 98);
+	--wt-ac-gtone: oklch(0.88 0.18 90);
+	--wt-ac-gtone-bg: oklch(0.32 0.08 90);
 }
 
 .workout-dashboard .wt-ac-card[data-group="legs"] {
