@@ -1,0 +1,204 @@
+{
+  "skill_name": "obsidian-plugin-requirements",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Obsidianのプラグインを作りたいんだけど、毎日のワークアウトの記録がめんどくさくて。今はノートに手動で書いてるんだけど、もっと楽にしたい。サイドバーに専用のビューを出して、そこからサクッと入力できるといいなと思ってる。",
+      "expected_output": "インタビューを通じてユーザーのワークアウト記録プラグインの要件を引き出し、requirements.mdとして出力する。Core Features（記録入力UI、サイドバービュー）、UI Components（コマンド、カスタムビュー）、Data Access（Vault内のノートへの書き込み）が含まれること。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_problem_statement",
+          "description": "requirements.md contains a '## Problem Statement' section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "Problem Statement"
+        },
+        {
+          "name": "has_numbered_requirements",
+          "description": "requirements.md contains numbered functional requirements like FR-01",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "FR-0"
+        },
+        {
+          "name": "has_ui_components",
+          "description": "requirements.md contains a UI Components section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "UI Components"
+        },
+        {
+          "name": "has_out_of_scope",
+          "description": "requirements.md contains an Out of Scope section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "Out of Scope"
+        },
+        {
+          "name": "mentions_personal_use",
+          "description": "requirements.md explicitly mentions personal use or non-distribution scope",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["personal use", "Personal use", "個人", "配布しない", "not for distribution", "single user"]
+        },
+        {
+          "name": "no_implementation_code",
+          "description": "requirements.md does not contain code blocks or Obsidian API method calls",
+          "type": "file_not_contains",
+          "file": "requirements.md",
+          "pattern": "```typescript"
+        },
+        {
+          "name": "mentions_sidebar_view",
+          "description": "requirements.md mentions a sidebar view or panel",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["sidebar", "Sidebar", "view", "View", "panel", "Panel", "サイドバー", "ビュー"]
+        },
+        {
+          "name": "mentions_vault_write",
+          "description": "requirements.md mentions writing data to vault notes",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["Writes", "writes", "write", "書き込み", "ノートに"]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "最近Obsidianでメモを取るとき、特定のテンプレートを何度も貼り付けてるんだよね。会議メモとか、読書メモとか。毎回TemplaterかQuickAddを使うんだけど、もっとシンプルに自分専用のコマンドでテンプレートを挿入できるプラグインを作りたい。",
+      "expected_output": "テンプレート挿入プラグインの要件定義。テンプレートの種類・保存場所・挿入トリガー（コマンド/ショートカット）を明確にし、既存プラグイン（Templater/QuickAdd）との差別化ポイントも要件に反映すること。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_problem_statement",
+          "description": "requirements.md contains a '## Problem Statement' section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "Problem Statement"
+        },
+        {
+          "name": "has_numbered_requirements",
+          "description": "requirements.md contains numbered functional requirements like FR-01",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "FR-0"
+        },
+        {
+          "name": "has_ui_components",
+          "description": "requirements.md contains a UI Components section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "UI Components"
+        },
+        {
+          "name": "has_out_of_scope",
+          "description": "requirements.md contains an Out of Scope section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "Out of Scope"
+        },
+        {
+          "name": "mentions_personal_use",
+          "description": "requirements.md explicitly mentions personal use or non-distribution scope",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["personal use", "Personal use", "個人", "配布しない", "not for distribution", "single user"]
+        },
+        {
+          "name": "no_implementation_code",
+          "description": "requirements.md does not contain TypeScript code blocks",
+          "type": "file_not_contains",
+          "file": "requirements.md",
+          "pattern": "```typescript"
+        },
+        {
+          "name": "mentions_commands",
+          "description": "requirements.md mentions commands or command palette",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["command", "Command", "コマンド"]
+        },
+        {
+          "name": "mentions_template_storage",
+          "description": "requirements.md mentions where templates are stored",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["template", "Template", "テンプレート", "folder", "Folder", "フォルダ", "stored", "storage"]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Obsidianのプラグインを作りたい。タグ管理が大変で、同じような意味のタグが増えすぎてる。どのタグが何個のノートで使われてるか一覧で見たくて、使われてないタグを削除したり、タグをまとめてリネームしたりしたい。",
+      "expected_output": "タグ管理プラグインの要件定義。タグ一覧表示・使用頻度・削除・リネームの機能要件を整理し、バルク操作や確認ダイアログの有無などUIの詳細も含むこと。",
+      "files": [],
+      "assertions": [
+        {
+          "name": "has_problem_statement",
+          "description": "requirements.md contains a '## Problem Statement' section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "Problem Statement"
+        },
+        {
+          "name": "has_numbered_requirements",
+          "description": "requirements.md contains numbered functional requirements like FR-01",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "FR-0"
+        },
+        {
+          "name": "has_ui_components",
+          "description": "requirements.md contains a UI Components section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "UI Components"
+        },
+        {
+          "name": "has_out_of_scope",
+          "description": "requirements.md contains an Out of Scope section",
+          "type": "file_contains",
+          "file": "requirements.md",
+          "pattern": "Out of Scope"
+        },
+        {
+          "name": "mentions_personal_use",
+          "description": "requirements.md explicitly mentions personal use or non-distribution scope",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["personal use", "Personal use", "個人", "配布しない", "not for distribution", "single user"]
+        },
+        {
+          "name": "no_implementation_code",
+          "description": "requirements.md does not contain TypeScript code blocks",
+          "type": "file_not_contains",
+          "file": "requirements.md",
+          "pattern": "```typescript"
+        },
+        {
+          "name": "mentions_tag_listing",
+          "description": "requirements.md mentions tag listing with usage counts",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["count", "Count", "一覧", "usage", "used", "使用", "list", "List"]
+        },
+        {
+          "name": "mentions_rename",
+          "description": "requirements.md mentions rename operation for tags",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["rename", "Rename", "リネーム"]
+        },
+        {
+          "name": "mentions_delete",
+          "description": "requirements.md mentions delete operation for tags",
+          "type": "file_contains_any",
+          "file": "requirements.md",
+          "patterns": ["delete", "Delete", "削除"]
+        }
+      ]
+    }
+  ]
+}
