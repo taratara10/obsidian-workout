@@ -2,6 +2,12 @@
 
 Obsidian プラグイン（個人利用）。ワークアウトデータを日次 `.md` ファイルの YAML frontmatter として記録し、カスタムダッシュボード UI で表示する。
 
+## スクリーンショット
+
+| ダッシュボード | アナリティクス | 記録モーダル |
+|:-:|:-:|:-:|
+| ![ダッシュボード](screenshot/screenshot_top.png) | ![アナリティクス](screenshot/screenshot_analytics.png) |![記録モーダル](screenshot/screenshot_input.png) |
+
 ## 機能
 
 - エクササイズをタイプ別（Sets / EMOM / Cardio / Routine）にグループ化したチップボード
