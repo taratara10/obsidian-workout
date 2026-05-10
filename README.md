@@ -1,63 +1,70 @@
 # Workout Dashboard
 
-An Obsidian plugin (personal use) that records workout data as YAML frontmatter in daily `.md` files and renders a custom dashboard UI.
+Obsidian プラグイン（個人利用）。ワークアウトデータを日次 `.md` ファイルの YAML frontmatter として記録し、カスタムダッシュボード UI で表示する。
 
-## Features
+## 機能
 
-- Custom dashboard view with exercises grouped by type (Sets / EMOM / Cardio)
-- Tap a chip to log a new entry; tap an existing row to edit or delete it
-- Workout data stored as YAML frontmatter in `workout/YYYY-MM-DD.md`
-- Recent workout history displayed below the chip board
-- Settings tab to manage your exercise menu and folder paths
+- エクササイズをタイプ別（Sets / EMOM / Cardio / Routine）にグループ化したチップボード
+- チップをタップして新規記録、既存行をタップして編集・削除
+- ワークアウトデータは `workout/YYYY-MM-DD.md` に YAML frontmatter として保存
+- 年間ワークアウト頻度をヒートマップで表示するコントリビューショングラフ
+- 直近 5 日分のタイムライン（日付ごとにグループ化）
+- 今日 / 今月 / 先月の実績を筋肉部位別に比較するアナリティクスカード
+- 設定タブでエクササイズメニューとフォルダーパスを管理
 
-## Exercise types
+## エクササイズタイプ
 
-| Type | Input | Storage |
-|------|-------|---------|
-| **Sets** | Numpad → per-set reps via chip list | Array of reps per set |
-| **EMOM** | Reps × Sets fields | `reps` and `sets` integers |
-| **Cardio** | Free-text comment + quick presets | Comment string |
+| タイプ | 入力方法 | 保存形式 |
+|--------|----------|----------|
+| **Sets** | 数字パッド → セットごとのレップ数をチップで入力 | レップ数の配列 |
+| **EMOM** | レップ数 × セット数フィールド | `reps` と `sets` の整数 |
+| **Cardio** | フリーテキスト + クイックプリセット | コメント文字列 |
+| **Routine** | フリーテキストのみ | コメント文字列 |
 
-## Setup
+## 筋肉部位
 
-1. Clone this repo into your vault's `.obsidian/plugins/workout-dashboard/`
-2. Run `npm i` then `npm run build`
-3. Enable the plugin in Obsidian settings
-4. Open the plugin settings and add at least one exercise (name + type)
-5. Use the command **Open Workout Dashboard** or click the ribbon icon
+エクササイズには筋肉部位（`chest` / `back` / `abs` / `legs`）を設定でき、チップの色に反映される。
 
-## Settings
+## セットアップ
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| Workout folder | `workout` | Folder where daily workout files are saved |
-| Dashboard file | `workout/dashboard.md` | File intercepted and displayed as the custom view |
+1. このリポジトリを vault の `.obsidian/plugins/workout-dashboard/` にクローン
+2. `npm i` → `npm run build` を実行
+3. Obsidian の設定でプラグインを有効化
+4. プラグイン設定でエクササイズを 1 件以上追加（名前・タイプ・筋肉部位）
+5. コマンド **Open Workout Dashboard** またはリボンアイコンからダッシュボードを開く
 
-Exercises must be added via settings before they appear on the dashboard. There are no built-in presets.
+## 設定
 
-## Development
+| 設定 | デフォルト | 説明 |
+|------|-----------|------|
+| Workout folder | `workout` | ワークアウトファイルを保存するフォルダー |
+| Dashboard file | `workout/dashboard.md` | カスタムビューとして表示するファイルのパス |
+
+エクササイズは設定で追加しないとダッシュボードに表示されない。組み込みプリセットはない（デフォルト設定に初期値あり）。
+
+## 開発
 
 ```bash
-npm run dev    # watch mode — bundles src/main.ts → main.js with sourcemaps
-npm run build  # type-check + production bundle
-npm run lint   # ESLint check
+npm run dev    # ウォッチモード — src/main.ts → main.js をソースマップ付きでバンドル
+npm run build  # 型チェック + プロダクションバンドル（最小化・ソースマップなし）
+npm run lint   # ESLint チェック
 ```
 
-To test changes: copy `main.js`, `styles.css`, and `manifest.json` into your vault's `.obsidian/plugins/workout-dashboard/` and reload Obsidian.
+変更の確認: `main.js`・`styles.css`・`manifest.json` を vault の `.obsidian/plugins/workout-dashboard/` にコピーして Obsidian をリロード。
 
-## Data format
+## データ形式
 
-Each daily file uses YAML frontmatter:
+各日次ファイルは YAML frontmatter で記録される:
 
 ```yaml
 ---
-date: 2026-04-30
+date: 2026-05-10
 exercises:
   - menu: "Pull-ups"
     type: sets
     sets: [10, 8, 6]
     comment: ""
-  - menu: "Row"
+  - menu: "Push-ups"
     type: emom
     reps: 12
     sets: 5
@@ -65,11 +72,15 @@ exercises:
   - menu: "Run"
     type: cardio
     comment: "5km easy"
+  - menu: "Abs"
+    type: routine
+    comment: "プランク 3セット"
 ---
 ```
 
-##	Manually installing the plugin
-Copy over below to your vault `VaultFolder/.obsidian/plugins/obsidian-workout/.`
-- main.js
-- styles.css
-- manifest.json 
+## プラグインの手動インストール
+
+以下の 3 ファイルを vault の `VaultFolder/.obsidian/plugins/obsidian-workout/` にコピーする:
+- `main.js`
+- `styles.css`
+- `manifest.json`
